@@ -3,6 +3,7 @@
 class Alumno_model extends CI_Model {
 
     private $id_alumno;
+    private $persona;
     private $curso;
 
     function getId_alumno() {

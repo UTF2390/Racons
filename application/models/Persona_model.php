@@ -1,6 +1,6 @@
 <?php
 
-class Usuario_model extends CI_Model {
+class Persona_model extends CI_Model {
 
         public $idUsuario;
         public $nombre;
