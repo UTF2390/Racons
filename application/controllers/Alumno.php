@@ -4,54 +4,78 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Alumno extends CI_Controller {
 
-    public function index() {
-        $this->load->view('vista_alumno'); 
+    public $modelo_alumno;
+
+    public function __construct() {
+        parent::__construct();
+        //Cargar el modelo
+        $this->load->model('Alumno_model');
     }
+
+    public function index() {
+        $this->load->view('alumno/vista_alumno');
+    }
+
+    /*
+     * El usuario se apunta de la tarea con $id_tarea.
+     */
 
     public function apuntarse($id_tarea) {
-        //1.-Comprobar si la tarea se permite por curso del alumno.
+        //1.-Comprobar si la tarea pertenece a la misma presentación 
+        //que el alumno.
         //
-        //2.-Comprobar si la el alumno ha superado el limite por categoria
-        //permitidos en los ultimos 30 dias en caso de que la opcion de 
-        //libre_de_limites este en FALSE.
+        //2.-Si la opción libre_de_limites este en FALSE, comprobar si el alumno
+        // ha superado el limite por categoria permitidos en los ultimos 30 dias. 
         //
-        //3.-Comprobar si el taller tiene plazas libres.
+        //3.-Comprobar si ya esta apuntado a esta tarea. 
         //
-        //4.-El alumno solo puede apuntarse a talleres con fecha de semana 
-        //siguiente o actual nunca del pasado.
+        //4.-Insertar en el historial si hay plazas libres. En la consulta
+        //select tiene que hacer un if comprobando si hay plazas luego 
+        //incrementar contador y despues insertar. De este modo se evitan errores.
         //
-        //5.-Comprobar si ya esta apuntado a esta tarea. Comparar la ultima
-        //fecha de la tabla apuntar, si es posterior a la fecha actual el 
-        //alumno ya esta apuntado.
-        //
-        //6.-Si los puntos anteriores lo permite apuntar al alumno a la tarea.
-        //
-        //7.-Ir al metodo presentaciones.
+        //5.-Ir a la vista presentaciones.
     }
 
-    public function desapuntarse() {
-        //1.-Comprobar si el alumno esta apuntado a la tarea (si la fecha de
-        //la tarea es posterior al dia actual, esta apuntado). 
-        //
-        //2.-Borrar la ultima fecha que sea mayor a fecha actual.
-        //
-        //3.-Volver a vista_presentaciones.
+    /*
+     * El usuario se desapunta de la tarea con $id_tarea.
+     */
+
+    public function desapuntarse($id_tarea) {
+        /*
+         * 1.-Comprobar si el alumno esta apuntado a la tarea borrarla. 
+         * 
+         * 2.-Volver a vista_presentaciones.
+         */
     }
 
-    //Muestra una lista de los talleres y presentaciones a las que el alumno
-    //se apuntó.
+    /*
+     * Muestra una lista de los talleres y presentaciones a las que el alumno
+     * se apuntó.
+     */
+
     public function historial() {
-        //Pasar por parametro el array del historial a la vista y mostrar
-        //vist_historial.
+        /*
+         * 1.- Pasar por parametro el array del historial a la vista y mostrar
+         * vist_historial.
+         */
+        $data['tareas'] = [['id' => 45556868, 'nombre' => 'Sala de poker', 'fecha' => '23/02/17'],
+                ['id' => 45556868, 'nombre' => 'Sala de poker', 'fecha' => '30/02/17'],
+                ['id' => 45556868, 'nombre' => 'Sala de poker', 'fecha' => '30/03/17']];
+        $this->load->view('alumno/vista_historial', $data);
     }
 
-    //Muestra las presentaciónes a las que el alumno se puede apuntar.
+    /*
+     * Muestra las presentaciónes a las que el alumno se puede apuntar.
+     */
+
     public function presentacion() {
-        //1.-Conseguir tareas que pertenezcan a la presentacion del alumno curso.
-        //
-        //
-        //2.-Mostrar vista_tareas. Le pasamos por parametro el array
-        //que tiene que mostrar.
+        /*
+         * 1.-Conseguir tareas que pertenezcan a la presentacion (curso)
+         * del alumno.
+         * 
+         * 2.-Mostrar vista_tareas. Le pasamos por parametro el array
+         * y mostra la vista /alumno/vista_presentaciones.
+         */
     }
 
 }

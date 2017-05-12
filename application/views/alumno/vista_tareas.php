@@ -68,7 +68,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <body>
 
 <div id="container">
-    Vista historial
+    Vista tareas de alumno. (vista_tareas)
 </div>
 
 </body>

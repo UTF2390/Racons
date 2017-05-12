@@ -66,9 +66,36 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	</style>
 </head>
 <body>
+    
+<!--<script>
+    //<?php
+//    echo 'var tareas = ';
+//    foreach ($tareas as $tarea) {
+//        
+//    }
+//    ?>
+    function crearTablaHistorialAlumno(){
+        
+    }
+</script>-->
 
 <div id="container">
-    Vista profesor
+    <?php
+        echo '<table>';
+        echo '<thead>';
+        echo '<tr>';
+        echo '<td>';
+        echo '</td>';
+        echo '</tr>';
+        echo '</thead>';
+    foreach ($tareas as $tarea){
+        echo '<tbody>';
+        
+        echo '</tbody>';
+    }
+        echo '</table>';
+    ?>
+    Vista historial
 </div>
 
 </body>

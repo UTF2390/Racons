@@ -68,7 +68,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <body>
 
 <div id="container">
-    Vista presentaciones
+    Vista tareas creadas por el profesor. (vista_mis_tareas)
 </div>
 
 </body>
