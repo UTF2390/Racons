@@ -34,11 +34,45 @@ class Admin extends Profesor {
          * id_usuario y id_categoria, modificarla o crearla con el limite.
          */
     }
-    public function nueva_categoria($nombre, $max) {
+
+    public function modificar_categoria($id_categoria) {
+        /*
+         * 1.- Modifica la categoria con los parametros pasados por post y ajax.
+         */
+        //modificar categoria
+        if ($this->db->_error_message()) {
+            $jsondata["success"] = False; // Or do whatever you gotta do here to raise an error
+            $jsondata["mensaje"] = sprintf('Error en la base de datos.');
+        } elseif ($this->db->affected_rows() > 0) {
+            $jsondata["success"] = True;
+            $jsondata["mensaje"] = sprintf("ok");
+        } else {
+            $jsondata["success"] = false;
+            $jsondata["mensaje"] = sprintf('No se modifico la categoria.');
+        }
+
+        echo json_encode($jsondata, JSON_FORCE_OBJECT);
+    }
+
+    public function nueva_categoria() {
         /*
          * 1.- Comprobar si hay una categoria con el mismo nombre.
          * Si no hay coincidencia, añadirla.
          */
+        $nombre = $this->db->escape($_POST['nombre']);
+        $limite = $this->db->escape($_POST['limite']);
+        //INSERTAAAAAA!!!!! S
+        if ($this->db->_error_message()) {
+            $jsondata["success"] = False; // Or do whatever you gotta do here to raise an error
+            $jsondata["mensaje"] = sprintf('Error en la base de datos.');
+        } elseif ($this->db->affected_rows() > 0) {
+            $jsondata["success"] = True;
+            $jsondata["mensaje"] = sprintf("ok");
+        } else {
+            $jsondata["success"] = false;
+            $jsondata["mensaje"] = sprintf('No se modifico la categoria.');
+        }
+        echo json_encode($jsondata, JSON_FORCE_OBJECT);
     }
 
     public function eliminar_categoria($id_categoria) {
@@ -46,9 +80,12 @@ class Admin extends Profesor {
          * 1.- Comprobar si hay tareas con esta categoria.
          * 
          * 2.- Si no hay tareas con esa categoria eliminar la categoria y todos 
-         * los limites en la tabla limites categoria alumnos (cascade). 
+         * los limites en la tabla limites categoria alumnos. 
          */
-        
+    }
+
+    public function añadir_alumnos() {
+        //...
     }
 
 }

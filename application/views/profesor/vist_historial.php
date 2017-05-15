@@ -46,7 +46,9 @@ function crearTablaHistorialAlumno(){
                     </thead>
             <tbody>';
             foreach ($tareas as $tarea) {
-                echo '<td>
+                echo '
+                    <tr>
+                        <td>
                         ' . $tarea['nombre'] . ' ' . $tarea['apellido1'] . ' ' . $tarea['apellido2'] . '
                         </td>
                         <td>
@@ -60,7 +62,8 @@ function crearTablaHistorialAlumno(){
                         </td>
                         <td>
                         ' . $tarea['categoria'] . '
-                        </td>';
+                        </td>
+                    </tr>';
             }
             echo '</tbody>';
             echo '</table>';
