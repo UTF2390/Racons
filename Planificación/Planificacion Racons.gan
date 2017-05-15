@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2017-04-26" view-index="0" gantt-divider-location="353" resource-divider-location="300" version="2.8.4" locale="es_ES">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2017-04-26" view-index="0" gantt-divider-location="353" resource-divider-location="300" version="2.8.4" locale="es">
     <description/>
     <view zooming-state="default:2" id="gantt-chart">
         <field id="tpd3" name="Nombre" width="237" order="0"/>
@@ -34,13 +34,13 @@
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
         <task id="0" name="Planificación(1h)" color="#8cb6ce" meeting="false" start="2017-04-26" duration="1" complete="100" expand="true"/>
-        <task id="5" name="UML Clase, de Uso, de Entidad-Relacion(2h)" color="#8cb6ce" meeting="false" start="2017-04-26" duration="1" complete="86" expand="true"/>
-        <task id="8" name="Base de datos(2h)" color="#8cb6ce" meeting="false" start="2017-04-26" duration="2" complete="46" expand="true"/>
+        <task id="5" name="UML Clase, de Uso, de Entidad-Relacion(2h)" color="#8cb6ce" meeting="false" start="2017-04-26" duration="1" complete="100" expand="true"/>
+        <task id="8" name="Base de datos(2h)" color="#8cb6ce" meeting="false" start="2017-04-26" duration="2" complete="100" expand="true"/>
         <task id="12" name="Servidor REST(10h)" meeting="false" start="2017-04-27" duration="3" complete="0" expand="true"/>
-        <task id="15" name="BackEnd(31h)" meeting="false" start="2017-05-01" duration="7" complete="30" expand="true"/>
-        <task id="16" name="FrontEnd(20h)" meeting="false" start="2017-05-09" duration="4" complete="0" expand="true"/>
+        <task id="15" name="BackEnd(31h)" meeting="false" start="2017-05-01" duration="7" complete="50" expand="true"/>
+        <task id="16" name="FrontEnd(20h)" meeting="false" start="2017-05-09" duration="4" complete="30" expand="true"/>
         <task id="17" name="Pruebas (10h)" meeting="false" start="2017-05-15" duration="3" complete="0" expand="true"/>
-        <task id="18" name="Memoria(10h)" meeting="false" start="2017-05-18" duration="3" complete="0" expand="true"/>
+        <task id="18" name="Memoria(10h)" meeting="false" start="2017-05-18" duration="3" complete="35" expand="true"/>
         <task id="19" name="Presentacion(5h)" meeting="false" start="2017-05-23" duration="2" complete="0" expand="true"/>
     </tasks>
     <resources>

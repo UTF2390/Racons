@@ -50,13 +50,16 @@ class Profesor extends CI_Controller {
         /*
          * 1.-Recoger los datos por post.
          * 
-         * 2.-Comprobar si existe la presentación.
+         * 2.-El profesor puede añadir la tarea a un grupo existente o crear uno
+         * nuevo. Comprobar si por post hay id_grupo =! null. En tal caso
+         * crea el grupo. Sino coger el id del grupo por post.
+         * 
+         * 3.-Comprobar si existe la presentación y el grupo.
          *
-         * 3.-Comprobar si el profesor tiene otras tareas a la misma hora y dia.
+         * 4.-Comprobar si el profesor tiene otras tareas a la misma hora y dia.
+         * Insertar nueva tarea
          * 
-         * 4.-Insertar nueva tarea.
-         * 
-         * 5.-Ir a la vista mis tareas. O usar Ajax ☺-☻¬
+         * 5.-Ir a la vista mis tareas. O usar Ajax ☺-☻¬.
          * 
          */
     }
