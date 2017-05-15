@@ -24,14 +24,15 @@ class Alumno extends CI_Controller {
         //1.-Comprobar si la tarea pertenece a la misma presentación 
         //que el alumno.
         //
-        //2.-Si la opción libre_de_limites este en FALSE, comprobar si el alumno
+        //2.-Comprobar si ya esta apuntado a esta tarea.
+        //
+        //3.- Si la opción libre_de_limites esta en FALSE, comprobar si el alumno
         // ha superado el limite por categoria permitidos en los ultimos 30 dias. 
         //
-        //3.-Comprobar si ya esta apuntado a esta tarea. 
-        //
         //4.-Insertar en el historial si hay plazas libres. En la consulta
-        //select tiene que hacer un if comprobando si hay plazas luego 
+        //select tiene que haber un if comprobando si hay plazas luego 
         //incrementar contador y despues insertar. De este modo se evitan errores.
+        //Tambien se puede hacer con un triger en la base de datos.
         //
         //5.-Ir a la vista presentaciones.
     }
