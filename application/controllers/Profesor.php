@@ -15,8 +15,7 @@ class Profesor extends CI_Controller {
 
     public function index() {
 //        $this->load->view('profesor/vista_profesor', $data);
-        $data['admin'] = FALSE;
-        $this->load->view('profesor/vista_profesor', $data);
+        $this->tareas();
     }
 
     public function desactivar_tarea() {
@@ -68,7 +67,7 @@ class Profesor extends CI_Controller {
      * Inserta un dia a la tarea.
      */
 
-    public function modificar_dia($dia, $hora_inicio, $hora_fin, $id_tarea) {
+    public function modificar_tarea() {
         /*
          * 1.- Comprueba si existe la tarea y si pertenece al profesor.
          * 
@@ -80,52 +79,27 @@ class Profesor extends CI_Controller {
     }
 
     /*
-     * Musetra la vista Vista tareas por presentaciones.
+     * Muestra las tareas creadas por el profesor.
      */
 
     public function tareas() {
         /*
-         * 1.- Musetra todas la lista de tareas de una presentación (curso)
-         * especifico.
+         * 1.-Buscar todas las tareas y el grupo al que pertenecen que ha creado
+         *  el profesor y pasarlas a la 
+         * vista vista_mis_tareas. 
          * 
-         * Bonus: Guardar en coockies la ultima presentación mostrada.
+         * Grupo info + Tarea info
          */
-    }
 
-    /*
-     * Muestra las tareas creadas por el profesor.
-     */
+        $data['tareas'] = [['descripcion' => 'Pos eso limpiar.', 'limite' => 5, 'nombre_grupo' => 'Limpiar', 'id' => 41658556, 'nombre' => 'Limpiar Patio', 'maximo' => 25, 'apuntados' => 15, 'dia' => 5, 'hora_inicio' => '11:30', 'hora_fin' => '11:30'],
+            ['descripcion' => 'Matematicas discretas lo dice todo.', 'limite' => 5, 'nombre_grupo' => 'Matematicoadictos', 'id' => 245524467, 'maximo' => 30, 'apuntados' => 10, 'dia' => 4, 'hora_inicio' => '11:30', 'hora_fin' => '11:30', 'nombre' => 'Matematicas Discretas'],
+            ['descripcion' => 'Mates version facil.', 'limite' => 5, 'nombre_grupo' => 'Matematicoadictos', 'id' => 757772577, 'nombre' => 'Algebra', 'maximo' => 30, 'apuntados' => 5, 'dia' => 3, 'hora_inicio' => '11:30', 'hora_fin' => '11:30']];
+        $data['admin'] = FALSE;
+        $data['grupos'] = [['nombre' => 'Limpiar', 'id' => 234234],
+            ['nombre' => 'Limpiar', 'id' => 234234],
+            ['nombre' => 'Limpiar', 'id' => 234234]];
 
-    public function mis_tareas() {
-        /*
-         * 1.-Buscar todas las tareas que ha creado el profesor y pasarlas a la 
-         * vista vista_mis_tareas. (Nota:Las tareas desactivadas (con dia == null)
-         * estaran las ultimas)
-         */
-        $data['tareas'] = [['id' => 41658556, 'nombre' => 'Limpiar Patio', 'Maximo' => 25, 'Apuntados' => 15, 'dia' => 5, 'hora_inicio' => '11:30', 'hora_fin' => '11:30'],
-                ['id' => 245524467,  'Maximo' => 30, 'Apuntados' => 10, 'dia' => 4, 'hora_inicio' => '11:30', 'hora_fin' => '11:30','nombre' => 'Matematicas Discretas'],
-                ['id' => 757772577, 'nombre' => 'Algebra', 'Maximo' => 30, 'Apuntados' => 5, 'dia' => 3, 'hora_inicio' => '11:30', 'hora_fin' => '11:30']];
-        
         $this->load->view('profesor/vista_mis_tareas', $data);
-    }
-
-    /* ☺☺☺☺☺☺☺☺☺☺☺---BONUS---☻☻☻☻☻☻☻☻☻☻☻☻☻ */
-    /*
-     * Quita un usuario de las tareas del profesor.
-     */
-
-    public function quitar_usuario($id_usuario, $id_tarea) {
-        /*
-         * 1.- Comprobar si el usuario esta apuntado a la tarea.
-         * 
-         * 2.- Comprobar si el profesor es el creador de la tarea.
-         * 
-         * 3.- Desapuntar usuario con id_usuario.
-         * 
-         * 4.- Este metodo funciona con Ajax. El javascript tendra que comunicar
-         * al usuario del resultado y modificar el html para que no se vea el 
-         * alumno apuntado.
-         */
     }
 
 }

@@ -4,24 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Welcome to CodeIgniter</title>
-
     </head>
     <body>
-
-<!--<script>
-//<?php
-//    echo 'var tareas = ';
-//    foreach ($tareas as $tarea) {
-//        
-//    }
-//    
-        ?>
-function crearTablaHistorialAlumno(){
-    
-}
-</script>-->
-
         <div id="container">
             <?php
             echo '<table>

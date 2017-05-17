@@ -61,7 +61,7 @@ class Admin extends Profesor {
          */
         $nombre = $this->db->escape($_POST['nombre']);
         $limite = $this->db->escape($_POST['limite']);
-        //INSERTAAAAAA!!!!! S
+        //INSERTAAAAAA!!!!! 
         if ($this->db->_error_message()) {
             $jsondata["success"] = False; // Or do whatever you gotta do here to raise an error
             $jsondata["mensaje"] = sprintf('Error en la base de datos.');
@@ -82,10 +82,28 @@ class Admin extends Profesor {
          * 2.- Si no hay tareas con esa categoria eliminar la categoria y todos 
          * los limites en la tabla limites categoria alumnos. 
          */
+        if ($this->db->_error_message()) {
+            $jsondata["success"] = False; // Or do whatever you gotta do here to raise an error
+            $jsondata["mensaje"] = sprintf('Error en la base de datos.');
+        } elseif ($this->db->affected_rows() > 0) {
+            $jsondata["success"] = True;
+            $jsondata["mensaje"] = sprintf("La categoria se elimino correctamente.");
+        } else {
+            $jsondata["success"] = false;
+            $jsondata["mensaje"] = sprintf('No se pudo eliminar la categoria. Esta siendo usada por una tarea.');
+        }
+        echo json_encode($jsondata, JSON_FORCE_OBJECT);
     }
 
     public function añadir_alumnos() {
         //...
+    }
+
+    public function configuracion() {
+        
+        
+        
+        $this->load->view('admin/configuracion', $data);
     }
 
 }

@@ -13,7 +13,7 @@ class Home extends CI_Controller {
          */
 
         $this->load->helper('url');
-        $newdata = ['admin' => ['username' => 'johndoe',
+        $newdata = ['profesor' => ['username' => 'johndoe',
                 'email' => 'johndoe@some-site.com',
                 'logged_in' => TRUE]];
 
