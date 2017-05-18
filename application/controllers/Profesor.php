@@ -14,8 +14,8 @@ class Profesor extends CI_Controller {
     }
 
     public function index() {
-//        $this->load->view('profesor/vista_profesor', $data);
-        $this->tareas();
+        $this->load->view('profesor/vista_profesor');
+//        $this->tareas();
     }
 
     public function desactivar_tarea() {

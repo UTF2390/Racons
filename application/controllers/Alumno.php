@@ -9,7 +9,7 @@ class Alumno extends CI_Controller {
     public function __construct() {
         parent::__construct();
         //Cargar el modelo
-        $this->load->model('Alumno_model');
+//        $this->load->model('Alumno_model');
     }
 
     public function index() {
