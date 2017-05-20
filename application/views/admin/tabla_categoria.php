@@ -1,5 +1,5 @@
 <?php
-echo '
+    echo '
     <table >
     <thead>
         <tr>
@@ -12,8 +12,9 @@ echo '
         </tr>
     </thead>
     <tbody>';
-foreach ($categorias as $categoria) {
-    echo '
+
+    foreach ($categorias as $categoria) {
+        echo '
         <tr>
             <td>
             ' . $categoria['nombre'] . '
@@ -21,14 +22,17 @@ foreach ($categorias as $categoria) {
             <td>
             ' . $categoria['limite'] . '
             </td>
-            
             <td>
-            <a href="http://localhost/admin/modificar_categoria/'.$categoria['id_categoria'].'"><button type="button" value="Modificar">Modificar</button><a>
+            <a href="http://localhost/Racons/index.php/admin/eliminar_categoria/' . $categoria['id_categoria'] . '"><button>Eliminar</button></a>
+            </td>
+            <td>
+            <a href="http://localhost/admin/modificar_categoria/' . $categoria['id_categoria'] . '"><button type="button" value="Modificar">Modificar</button><a>
             </td>
         </tr>';
-}
-echo '</tbody>';
-echo '</table>';
+    }
+    echo '</tbody>';
+    echo '</table>';
+
 ?>
 <script>
 //    function modificar_categoria(var id_categoria) {

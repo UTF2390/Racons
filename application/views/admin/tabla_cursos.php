@@ -15,7 +15,7 @@ foreach ($cursos as $curso) {
     echo '
         <tr>
             <td>
-            <input id="descripcion" type="text">' . $curso['curso'] . '</input>
+             ' . $curso['curso'] . '
             </td>
             <td>
             <a href="http://localhost/Racons/index.php/admin/eliminar_curso/' . $curso['id_curso'] . '"><button>Eliminar</button></a>

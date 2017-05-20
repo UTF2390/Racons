@@ -12,9 +12,7 @@ class Curso_model extends CI_Model {
     //Existen talleres de la categoria con id == id_categoria?
     function existe_alumnos_talleres_curso($id_curso) {
         $id_curso = (int) $id_curso;
-
-        $q = $this->db->query('SELECT id_curso from alumno UNION SELECT id_curso from curso_taller');
-        $q->result_array();
+        $q = $this->db->query('SELECT id_curso from alumno where id_curso = ' . $id_curso . ' UNION SELECT id_curso from curso_taller where id_curso = ' . $id_curso . '');
         if ($q->num_rows() > 0) {
             return true;
         } else {
@@ -24,7 +22,7 @@ class Curso_model extends CI_Model {
 
     //Sepuede eliminar un curso si no tiene tallers ni alumnos relacinados.
     function delete_curso($id_curso) {
-        if ($this->existe_alumnos_talleres_curso($id_curso)== FALSE) {
+        if ($this->existe_alumnos_talleres_curso($id_curso) == FALSE) {
             $this->db->where('id_curso', $id_curso);
             return $this->db->delete('curso');
         } else {

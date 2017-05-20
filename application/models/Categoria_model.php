@@ -25,9 +25,8 @@ class Categoria_model extends CI_Model {
 
     //Existen talleres de la categoria con id == id_categoria?
     function existe_taller_categoria($id_categoria) {
-        $this->db->select('id_categoria');
-        $this->db->where('id_categoria', $id_categoria);
-        $q = $this->db->get('taller');
+        $id_categoria = (int) $id_categoria;
+        $q = $this->db->query('SELECT id_categoria from taller where id_categoria = ' . $id_categoria );
         if ($q->num_rows() > 0) {
             return true;
         } else {
@@ -37,7 +36,7 @@ class Categoria_model extends CI_Model {
 
     //Sepuede eliminar una categoria si no tiene tallers relacinados.
     function delete_categoria($id_categoria) {
-        if ($this->existe_taller_categoria($id_categoria)) {
+        if ($this->existe_taller_categoria($id_categoria) == FALSE) {
             $this->db->where('id_categoria', $id_categoria);
             return $this->db->delete('categoria');
         } else {
@@ -50,7 +49,6 @@ class Categoria_model extends CI_Model {
             'nombre' => $nombre,
             'limite' => $limite
         );
-
         $this->db->insert('categoria', $data);
         return $this->db->affected_rows() > 0;
     }

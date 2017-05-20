@@ -18,17 +18,29 @@ class Admin extends Profesor {
          * 1.- Modifica la categoria con los parametros pasados por post y ajax.
          */
         //modificar categoria
-        $this->load->model('Categoria');
-        $categoria = new Categoria_model();
-
-        $id_categoria = $this->input->post('id_categoria');
-        $limite_categoria = $this->input->post('limite_categoria');
         $nombre = $this->input->post('nombre');
-        //retorna true o false si se actualiza correctamente estaria bien que 
-        //lo recoguiera el ajax.
-        $categoria->update_categoria($id_categoria, $limite_categoria, $nombre);
+        $limite = $this->input->post('limite');
+        $limite = (int) $limite;
+        if ($nombre  && $limite ) {
 
-        $this->configuracion();
+            $nombre = $this->db->escape($nombre);
+            $limite = $this->db->escape($limite);
+
+
+            $this->load->model('Categoria');
+            $categoria = new Categoria_model();
+
+            $id_categoria = $this->input->post('id_categoria');
+            $limite_categoria = $this->input->post('limite_categoria');
+            $nombre = $this->input->post('nombre');
+            //retorna true o false si se actualiza correctamente estaria bien que 
+            //lo recoguiera el ajax.
+            $categoria->update_categoria($id_categoria, $limite_categoria, $nombre);
+
+            $this->configuracion();
+        } else {
+            
+        }
     }
 
     public function nueva_categoria() {
@@ -39,14 +51,9 @@ class Admin extends Profesor {
         $nombre = $this->input->post('nombre');
         $limite = $this->input->post('limite');
         $limite = (int) $limite;
-        if ($nombre != '' && $limite != '') {
-
-            $nombre = $this->db->escape($nombre);
-            $limite = $this->db->escape($limite);
-
+        if ($nombre != FALSE && $limite != FALSE) {
             $this->load->model('Categoria_model');
             $categoria = new Categoria_model();
-
             $exito = $categoria->insertar_categoria($nombre, $limite);
 
             /* los mensajes no se recogen por ajax asi que de momento no funcinan
@@ -106,9 +113,9 @@ class Admin extends Profesor {
         $this->load->model('Curso_model');
         $curso = new Curso_model();
         $delete = $curso->delete_curso($id_curso);
-        if ($delete){
+        if ($delete) {
             echo 'True';
-        }else{
+        } else {
             echo 'False';
         }
         $this->configuracion();
@@ -124,9 +131,8 @@ class Admin extends Profesor {
         $curso = new Curso_model();
 
         $nombre = $this->input->post('nombre');
-                        
+
         if ($nombre != FALSE) {
-            $nombre = $this->db->escape($nombre);
             $exito = $curso->insertar_curso($nombre);
 
             $this->configuracion();
