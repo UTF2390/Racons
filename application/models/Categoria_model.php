@@ -4,9 +4,8 @@ class Categoria_model extends CI_Model {
 
     //terminado sin comprobar
     public function categorias() {
-        $this->db->select('nombre, limite_categoria');
         $q = $this->db->get('categoria');
-        return $q->result();
+        return $q->result_array();
     }
 
     public function update_categoria($id_categoria, $limite_categoria, $nombre) {

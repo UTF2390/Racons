@@ -16,14 +16,14 @@ foreach ($categorias as $categoria) {
     echo '
         <tr>
             <td>
-            ' . $categoria['nombre_categoria'] . '
+            ' . $categoria['nombre'] . '
             </td>
             <td>
             ' . $categoria['limite'] . '
             </td>
             
             <td>
-            <a href="http://localhost/admin/modificar_categoria/'.$categoria['id'].'"><button type="button"/><a>;
+            <a href="http://localhost/admin/modificar_categoria/'.$categoria['id_categoria'].'"><button type="button" value="Modificar">Modificar</button><a>
             </td>
         </tr>';
 }

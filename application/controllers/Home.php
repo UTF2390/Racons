@@ -17,7 +17,7 @@ class Home extends CI_Controller {
          * o la vista login para logear/registrar.
          */
 
-        $newdata = ['alumno' => ['username' => 'johndoe',
+        $newdata = ['admin' => ['username' => 'johndoe',
                 'email' => 'johndoe@some-site.com',
                 'logged_in' => TRUE]];
 

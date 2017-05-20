@@ -11,20 +11,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <div id="container">
             <div><h3>Categorias</h3>
                 <?php
-                $this->load->view('tabla_config_categoria');
+                $lista_categorias['categorias'] = $categorias;
+                $this->load->view('admin/tabla_categoria', $lista_categorias);
                 ?>
                 <h3>Nueva categoria</h3>
                 <?php
-                $this->load->view('form_nueva_categoria');
+                $this->load->view('admin/form_nueva_categoria');
                 ?>
             </div>
             <div><h3>Cursos</h3>
                 <?php
-                $this->load->view('tabla_cursos');
+                $data['cursos'] = $cursos;
+                $this->load->view('admin/tabla_cursos');
                 ?>
                 <h3>Nuevo curso</h3>
                 <?php
-                $this->load->view('form_nueva_categoria');
+                $this->load->view('admin/form_nuevo_curso', $data);
                 ?>
             </div>
 

@@ -11,23 +11,23 @@ echo '
         </tr>
     </thead>
     <tbody>';
-foreach ($cursos as $curo) {
+foreach ($cursos as $curso) {
     echo '
         <tr>
             <td>
-            <input id="descripcion" type="text">' . $curo['nombre'] . '</input>
+            <input id="descripcion" type="text">' . $curso['curso'] . '</input>
             </td>
             <td>
-            <button onclick="eliminar_curso(' . $curo['nombre'] . ');"></button
+            <a href="http://localhost/Racons/index.php/admin/eliminar_curso/' . $curso['id_curso'] . '"><button>Eliminar</button></a>
             </td>
         </tr>';
 }
 echo '</tbody>';
 echo '</table>';
 ?>
-<script>
+<!--<script>
     function eliminar_curso() {
-        var url = "http://localhost/Racons/admin/eliminar_curso/";
+        var url = "http://localhost/Racons/index.php/admin/eliminar_curso/";
         var obj = new Object();
         obj.curso = curso
         var jsonString = JSON.stringify(obj);
@@ -49,4 +49,4 @@ echo '</table>';
             }
         });
     }
-</script>
+</script>-->

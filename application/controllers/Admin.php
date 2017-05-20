@@ -38,8 +38,8 @@ class Admin extends Profesor {
          */
         $nombre = $this->input->post('nombre');
         $limite = $this->input->post('limite');
-
-        if ($nombre != FALSE && $limite != FALSE) {
+        $limite = (int) $limite;
+        if ($nombre != '' && $limite != '') {
 
             $nombre = $this->db->escape($nombre);
             $limite = $this->db->escape($limite);
@@ -65,6 +65,7 @@ class Admin extends Profesor {
             $this->configuracion();
         } else {
             $this->configuracion();
+            echo 'nada';
         }
     }
 
@@ -104,8 +105,12 @@ class Admin extends Profesor {
          */
         $this->load->model('Curso_model');
         $curso = new Curso_model();
-        $curso->delete_curso($id_curso);
-
+        $delete = $curso->delete_curso($id_curso);
+        if ($delete){
+            echo 'True';
+        }else{
+            echo 'False';
+        }
         $this->configuracion();
     }
 
@@ -119,7 +124,7 @@ class Admin extends Profesor {
         $curso = new Curso_model();
 
         $nombre = $this->input->post('nombre');
-
+                        
         if ($nombre != FALSE) {
             $nombre = $this->db->escape($nombre);
             $exito = $curso->insertar_curso($nombre);
@@ -141,16 +146,12 @@ class Admin extends Profesor {
         $this->load->model('Categoria_model');
         $categoria = new Categoria_model();
 
-        $data['cursos'] = $curso->cursos();
         $data['categorias'] = $categoria->categorias();
+        $data['cursos'] = $curso->cursos();
         /* Ahora data tiene toda la informacion de las tablas de curso y categoria.
          * para que el administrador pueda verlas en su vista y eliminarlas.
          */
         $this->load->view('admin/configuracion', $data);
-    }
-
-    public function añadir_alumnos() {
-        //...
     }
 
     public function añadir_alumnos() {

@@ -1,9 +1,10 @@
-<form enctype="multipart/form-data" action="" method='POST'>
+<form enctype="multipart/form-data" action="http://localhost/Racons/index.php/admin/nuevo_curso" method='POST'>
     <text>Nombre del Curso</text>
-    <input type='text'id='curso'></input>
-    <button type="disabled" onclick="nuevo_curso();">Añadir</button>
+    <input type='text' id='nombre' name="nombre"></input>
+    <input type="submit" value="Submit"/>
+    <!--<button type="disabled" onclick="nuevo_curso();">Añadir</button>-->
 </form>
-<script>
+<!--<script>
     function nuevo_curso() {
         var url = "http://localhost/Racons/admin/nuevo_curso";
         var obj = new Object();
@@ -25,4 +26,4 @@
             }
         });
     }
-</script>
+</script>-->

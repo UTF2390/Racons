@@ -1,11 +1,12 @@
-<form enctype="multipart/form-data" action="" method='POST'>
+<form enctype="multipart/form-data" action="http://localhost/Racons/index.php/admin/nueva_categoria" method='POST'>
     <text>Nombre</text>
-    <input type='text'id='nombre'></input>
+    <input type='text' id='nombre' name="nombre"></input>
     <text>Limite</text>
-    <input type='text'id='limite'></input>
-    <button type="disabled" onclick="insertar_categoria();">Añadir</button>
+    <input type='number' id='limite' value="5" name="limite"></input>
+    <!--<button type="disabled" onclick="insertar_categoria();">Añadir</button>-->
+    <input type="submit" value="Añadir"/>
 </form>
-<script>
+<!--<script>
     function insertar_categoria() {
         var url = "http://localhost/Racons/admin/nueva_categoria";
         var obj = new Object();
@@ -30,4 +31,4 @@
             }
         });
     }
-</script>
+</script>-->
