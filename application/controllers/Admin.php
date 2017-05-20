@@ -21,7 +21,7 @@ class Admin extends Profesor {
         $nombre = $this->input->post('nombre');
         $limite = $this->input->post('limite');
         $limite = (int) $limite;
-        if ($nombre  && $limite ) {
+        if ($nombre && $limite) {
 
             $nombre = $this->db->escape($nombre);
             $limite = $this->db->escape($limite);
@@ -116,7 +116,7 @@ class Admin extends Profesor {
         if ($delete) {
             echo 'True';
         } else {
-            echo 'False';
+            echo 'No elimino curso porque hay alumnos apuntado a el ☻-☺¬.';
         }
         $this->configuracion();
     }
@@ -158,6 +158,27 @@ class Admin extends Profesor {
          * para que el administrador pueda verlas en su vista y eliminarlas.
          */
         $this->load->view('admin/configuracion', $data);
+    }
+
+    public function nuevo_alumno() {
+        /*
+         * 1.- Comprobar si hay una categoria con el mismo nombre.
+         * Si no hay coincidencia, añadirla.
+         */
+        $nombre = $this->input->post('nombre');
+        $apellido1 = $this->input->post('apellido1');
+        $apellido2 = $this->input->post('apellido2');
+        $id_curso = $this->input->post('id_curso');
+        $id_curso = (int) $id_curso;
+        if ($nombre != FALSE && $apellido1 != FALSE && $apellido2 != FALSE && $id_curso != FALSE) {
+            $this->load->model('Alumno_model');
+            $alumno = new Alumno_model();
+            $exito = $alumno->insertar_Alumno($nombre, $apellido1, $apellido2, $id_curso);
+            $this->configuracion();
+        } else {
+            $this->configuracion();
+            echo 'Error en el form de nuevo_alumno.';
+        }
     }
 
     public function añadir_alumnos() {

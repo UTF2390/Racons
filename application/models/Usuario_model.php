@@ -24,7 +24,7 @@ class Usuario_model extends CI_Model {
                 }
             }
 
-            return ['usuario' => $q->result(), 'encontrado' => TRUE];
+            return ['usuario' => $q->result_array(), 'encontrado' => TRUE];
         } else {
             return ['encontrado' => FALSE];
         }
@@ -46,7 +46,7 @@ class Usuario_model extends CI_Model {
         $this->db->where('id_profesor', $id_persona);
         $q = $this->db->get('profesor');
         if ($q->num_rows() > 0) {
-            return ['datos' => $q->row(), 'encontrado' => TRUE];
+            return ['datos' => $q->result_array(), 'encontrado' => TRUE];
         } else {
             return ['encontrado' => FALSE];
         }
@@ -57,7 +57,7 @@ class Usuario_model extends CI_Model {
         $this->db->where('id_profesor', $id_persona);
         $q = $this->db->get('alumno');
         if ($q->num_rows() > 0) {
-            return ['datos' => $q->row(), 'encontrado' => TRUE];
+            return ['datos' => $q->result_array(), 'encontrado' => TRUE];
         } else {
             return ['encontrado' => FALSE];
         }

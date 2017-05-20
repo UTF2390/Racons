@@ -7,21 +7,22 @@ class Alumno_model extends CI_Model {
         return $query->result();
     }
 
-    function setAlumno($usuario, $pass, $nombre, $apellido1, $apellido2, $curso) {
-        $data = array(
-            'nick' => $usuario,
-            'pass' => $pass,
+    function insertar_Alumno($nombre, $apellido1, $apellido2, $id_curso) {
+        $persona = [
             'nombre' => $nombre,
             'apellido1' => $apellido1,
-            'apellido2' => $apellido2,
-            'curso' => $curso
-        );
-        if ($this->existe_nick($nick)) {
-            return ['nick_libre' => TRUE];
-        } else {
-            $this->db->insert('alumno', $data);
-            return ['nick_libre' => FALSE];
-        }
+            'apellido2' => $apellido2];
+
+        $this->db->insert('persona', $persona);
+        $id_persona = $this->db->insert_id();
+
+        $this->db->where('id_persona', $id_persona);
+        $this->db->update('persona', ['nick' => $id_persona]);
+
+        $alumno = ['id_curso' => $id_curso, 'id_alumno' => $id_persona];
+        $this->db->insert('alumno', $alumno);
+
+        return TRUE;
     }
 
     function deleteAlumno($id) {

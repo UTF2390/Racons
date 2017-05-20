@@ -2,18 +2,15 @@
     <text>Nombre</text>
     <input type='text' id='nombre' name="nombre"></input>
     <text>Limite</text>
-    <input type='number' id='limite' value="5" name="limite"></input>
-    <!--<button type="disabled" onclick="insertar_categoria();">Añadir</button>-->
-    <input type="submit" value="Añadir"/>
+    <input type='number' id='nombre' value="5" name="limite"></input>
+    <input type="submit" value="Submit"/>
+    <!--<button type="disabled" onclick="nuevo_curso();">Añadir</button>-->
 </form>
 <!--<script>
-    function insertar_categoria() {
-        var url = "http://localhost/Racons/admin/nueva_categoria";
+    function nuevo_curso() {
+        var url = "http://localhost/Racons/admin/nuevo_curso";
         var obj = new Object();
-        obj.id = document.getElementById(id_categoria);
-        obj.nombre = document.getElementById("nombre");
-        obj.limite = document.getElementById("limite");
-        obj.descripcion = document.getElementById("descripcion");
+        obj.curso = document.getElementById("curso");
         var jsonString = JSON.stringify(obj);
         $.ajax({
             dataType: 'json',
