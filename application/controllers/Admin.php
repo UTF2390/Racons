@@ -116,7 +116,7 @@ class Admin extends Profesor {
         if ($delete) {
             echo 'True';
         } else {
-            echo 'No elimino curso porque hay alumnos apuntado a el ☻-☺¬.';
+            echo 'No se pueden eliminar curso que tengan alumnos. ☻-☺¬.';
         }
         $this->configuracion();
     }
@@ -181,7 +181,28 @@ class Admin extends Profesor {
         }
     }
 
-    public function añadir_alumnos() {
+    public function nuevo_profesor() {
+        /*
+         * 1.- Inserta un nuevo profesor.
+         */
+        $nombre = $this->input->post('nombre');
+        $apellido1 = $this->input->post('apellido1');
+        $apellido2 = $this->input->post('apellido2');
+        $administrador = $this->input->post('administrador');
+        var_dump($_POST);
+        if ($nombre != FALSE && $apellido1 != FALSE && $apellido2 != FALSE) {
+            $this->load->model('Profesor_model');
+            $profesor = new Profesor_model();
+            $administrador = (int) $administrador;
+            $exito = $profesor->insertar_profesor($nombre, $apellido1, $apellido2, $administrador);
+            $this->configuracion();
+        } else {
+            $this->configuracion();
+            echo 'Error en el form de nuevo_profe.';
+        }
+    }
+
+    public function añadir_alumnos_con_fichero() {
         //...
     }
 

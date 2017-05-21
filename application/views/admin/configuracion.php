@@ -33,18 +33,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div><h2>Crear Cuentas de usuario</h3>
                     <h4>Añadir Alumno</h3>
                         <?php
-                        $data['cursos'] = $cursos;
-                        if (empty($cursos) != TRUE) {
-                            $this->load->view('admin/form_nuevo_alumno', $data);
-                        }
+                            $data['cursos'] = $cursos;
+                            if (empty($cursos) != TRUE) {
+                                $this->load->view('admin/form_nuevo_alumno', $data);
+                            }else{
+                                echo '<text>No se pueden crear alumnos si no hay cursos. Introduzca primero un curso.</text>';
+                            }
                         ?>
                         <h4>Añadir Profesor</h3>
-                            //<?php
-//                    $data['cursos'] = $cursos;
-//                    if (empty($cursos) != TRUE) {
-//                        $this->load->view('admin/form_nuevo_profesor');
-//                    }
-//                    
+                            <?php
+                            $this->load->view('admin/form_nuevo_profesor');
                             ?>
                             </div>
                             Vista configuración del administrador
