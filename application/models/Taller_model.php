@@ -22,12 +22,11 @@ class Taller_model extends CI_Model {
 
     public function taller_profesor($id_profesor) {
 
-        $this->db->select('c.nombre as nombre_categoria, id_taller, t.nombre,aforamiento, dia, hora_inicio, hora_fin,activo, id_profesor, t.id_categoria as t_id_categoria, participantes,descripcion');
-        $this->db->from('categoria c, taller t');
-        $this->db->where('id_profesor', $id_profesor);
-        $this->db->where('c.id_categoria', 't.id_categoria');
-        $this->db->order_by('dia', 'hora_inicio');
-        $q = $this->db->get();
+        $q = $this->db->query('SELECT c.nombre as nombre_categoria, id_taller, t.nombre, aforamiento, dia, hora_inicio, hora_fin, activo, id_profesor, c.id_categoria as c_id_categoria, participantes, descripcion, t.id_categoria 
+           FROM categoria c, taller t
+        WHERE id_profesor =' . $id_profesor . '
+        AND c.id_categoria = t.id_categoria
+        ORDER BY t.nombre, dia , hora_inicio');
         return $q->result_array();
     }
 
@@ -87,7 +86,7 @@ class Taller_model extends CI_Model {
             'aforamiento' => $aforamiento
         );
         $this->db->insert('taller', $data);
-        return $this->db->rows_afected() > 0;
+        return $this->db->affected_rows() > 0;
     }
 
 }

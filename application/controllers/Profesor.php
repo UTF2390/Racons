@@ -83,7 +83,7 @@ class Profesor extends CI_Controller {
         if (TRUE) {
             $this->load->model('Taller_model');
             $taller = new Taller_model();
-            $this->session->userdata('id_profesor');
+            $id_profesor = $this->session->userdata('id_profesor');
             $exito = $taller->insertar_taller($id_profesor, $nombre, $id_categoria, $descripcion, $id_cursos, $dia, $hora_inicio_hh, $hora_inicio_mm, $hora_fin_hh, $hora_fin_mm, $activo, $aforamiento);
             echo $exito;
             echo '☺☻☺☻';
@@ -124,9 +124,10 @@ class Profesor extends CI_Controller {
 
 //        $data['talleres_activas'] = $taller->talleres_activas();
 //        $data['talleres_desactivadas'] = $taller->talleres_desactivadas();
+        echo $this->session->userdata('id_profesor');
         $data['talleres'] = $taller->taller_profesor($this->session->userdata('id_profesor'));
         $data['categorias'] = $categoria->categorias();
-//        var_dump($data);
+        var_dump($data['talleres']);
         $this->load->view('profesor/vista_mis_talleres', $data);
     }
 

@@ -27,14 +27,22 @@
     <select name="hora_inicio_hh">
         <?php
         for ($i = 0; $i < 24; $i++) {
-            echo' <option value = "' . $i . '">' . $i . '</option>';
+            if ($i < 10) {
+                echo' <option value = "0' . $i . '">0' . $i . '</option>';
+            } else {
+                echo' <option value = "' . $i . '">' . $i . '</option>';
+            }
         }
         ?>
     </select>:   
     <select name="hora_inicio_mm">
         <?php
         for ($i = 0; $i < 60; $i++) {
-            echo' <option value = "' . $i . '">' . $i . '</option>';
+            if ($i < 10) {
+                echo' <option value = "0' . $i . '">0' . $i . '</option>';
+            } else {
+                echo' <option value = "' . $i . '">' . $i . '</option>';
+            }
         }
         ?>
     </select>     
@@ -42,14 +50,22 @@
     <select name="hora_fin_hh">
         <?php
         for ($i = 0; $i < 24; $i++) {
-            echo' <option value = "' . $i . '">' . $i . '</option>';
+            if ($i < 10) {
+                echo' <option value = "0' . $i . '">0' . $i . '</option>';
+            } else {
+                echo' <option value = "' . $i . '">' . $i . '</option>';
+            }
         }
         ?>
     </select>:  
     <select name="hora_fin_mm">
         <?php
         for ($i = 0; $i < 60; $i++) {
-            echo' <option value = "' . $i . '">' . $i . '</option>';
+            if ($i < 10) {
+                echo' <option value = "0' . $i . '">0' . $i . '</option>';
+            } else {
+                echo' <option value = "' . $i . '">' . $i . '</option>';
+            }
         }
         ?>
     </select>
