@@ -39,23 +39,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </tr>
                     </thead>
             <tbody>';
-        foreach ($tareas as $tarea) {
+        foreach ($tareas as $taller) {
             echo '
                     <tr>
                         <td>
-                        ' . $tarea['nombre'] . ' ' . $tarea['apellido1'] . ' ' . $tarea['apellido2'] . '
+                        ' . $taller['nombre'] . ' ' . $taller['apellido1'] . ' ' . $taller['apellido2'] . '
                         </td>
                         <td>
-                        ' . $tarea['nombre_grupo'] . ' 
+                        ' . $taller['nombre_grupo'] . ' 
                         </td>
                         <td>
-                        ' . $tarea['nombre_taller'] . '
+                        ' . $taller['nombre_taller'] . '
                         </td>
                         <td>
-                        ' . $tarea['fecha'] . '
+                        ' . $taller['fecha'] . '
                         </td>
                         <td>
-                        ' . $tarea['categoria'] . '
+                        ' . $taller['categoria'] . '
                         </td>
                     </tr>';
         }

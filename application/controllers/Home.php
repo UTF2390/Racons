@@ -19,7 +19,7 @@ class Home extends CI_Controller {
 
         $newdata = ['admin' => ['username' => 'johndoe',
                 'email' => 'johndoe@some-site.com',
-                'logged_in' => TRUE]];
+                'id_profesor' => 2], 'id_profesor' => 2];
 
         $this->session->set_userdata($newdata);
 
@@ -51,7 +51,7 @@ class Home extends CI_Controller {
         //recibe por post el password y el nick
         $password = $this->db->escape($this->post('password'));
         $nick = $this->db->escape($this->post('nick'));
-        
+
         //Existe el usuario? Y guarda los datos en sesión.
         $userdata = $usuario->login($password, $nick);
         $this->session->userdata($userdata['usuario']);

@@ -3,8 +3,7 @@
     <input type='text' id='nombre' name="nombre"></input>
     <text>Limite</text>
     <input type='number' id='nombre' value="5" name="limite"></input>
-    <input type="submit" value="Submit"/>
-    <!--<button type="disabled" onclick="nuevo_curso();">Añadir</button>-->
+    <input type="submit" value="Guardar"/>
 </form>
 <!--<script>
     function nuevo_curso() {

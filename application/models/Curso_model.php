@@ -20,7 +20,7 @@ class Curso_model extends CI_Model {
         }
     }
 
-    //Sepuede eliminar un curso si no tiene tallers ni alumnos relacinados.
+    //Sepuede eliminar un curso si no tiene talleres ni alumnos relacinados.
     function delete_curso($id_curso) {
         if ($this->existe_alumnos_talleres_curso($id_curso) == FALSE) {
             $this->db->where('id_curso', $id_curso);

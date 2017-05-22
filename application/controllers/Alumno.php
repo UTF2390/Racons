@@ -17,14 +17,14 @@ class Alumno extends CI_Controller {
     }
 
     /*
-     * El usuario se apunta de la tarea con $id_tarea.
+     * El usuario se apunta de la taller con $id_tarea.
      */
 
     public function apuntarse($id_tarea) {
-        //1.-Comprobar si la tarea pertenece a la misma presentación 
+        //1.-Comprobar si la taller pertenece a la misma presentación 
         //que el alumno.
         //
-        //2.-Comprobar si ya esta apuntado a esta tarea.
+        //2.-Comprobar si ya esta apuntado a esta taller.
         //
         //3.- Si la opción libre_de_limites esta en FALSE, comprobar si el alumno
         // ha superado el limite por categoria permitidos en los ultimos 30 dias. 
@@ -38,12 +38,12 @@ class Alumno extends CI_Controller {
     }
 
     /*
-     * El usuario se desapunta de la tarea con $id_tarea.
+     * El usuario se desapunta de la taller con $id_tarea.
      */
 
     public function desapuntarse($id_tarea) {
         /*
-         * 1.-Comprobar si el alumno esta apuntado a la tarea borrarla. 
+         * 1.-Comprobar si el alumno esta apuntado a la taller borrarla. 
          * 
          * 2.-Volver a vista_presentaciones.
          */

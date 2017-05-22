@@ -13,34 +13,44 @@ class Admin extends Profesor {
         $this->configuracion();
     }
 
-    public function modificar_categoria($id_categoria) {
+    public function modificar_categoria() {
         /*
          * 1.- Modifica la categoria con los parametros pasados por post y ajax.
          */
         //modificar categoria
         $nombre = $this->input->post('nombre');
         $limite = $this->input->post('limite');
-        $limite = (int) $limite;
-        if ($nombre && $limite) {
+        $id_categoria = $this->input->post('id_categoria');
 
-            $nombre = $this->db->escape($nombre);
-            $limite = $this->db->escape($limite);
-
-
-            $this->load->model('Categoria');
+        if ($nombre != FALSE && $limite != FALSE && $id_categoria != FALSE) {
+            $limite = (int) $limite;
+            $this->load->model('Categoria_model');
             $categoria = new Categoria_model();
 
-            $id_categoria = $this->input->post('id_categoria');
-            $limite_categoria = $this->input->post('limite_categoria');
-            $nombre = $this->input->post('nombre');
-            //retorna true o false si se actualiza correctamente estaria bien que 
-            //lo recoguiera el ajax.
-            $categoria->update_categoria($id_categoria, $limite_categoria, $nombre);
-
-            $this->configuracion();
+            $response = $categoria->update_categoria($id_categoria, $limite, $nombre);
         } else {
-            
+            $response = "Error en el Ajax.";
+            echo $response;
         }
+    }
+
+    public function eliminar_categoria() {
+        /*
+         * 1.- Comprobar si hay tareas con esta categoria.
+         * 
+         * 2.- Si no hay tareas con esa categoria eliminar la categoria y todos 
+         * los limites en la tabla limites categoria alumnos. 
+         */
+        $id_categoria = $this->input->post('id_categoria');
+        if ($id_categoria != FALSE) {
+            $this->load->model('Categoria_model');
+            $categoria = new Categoria_model();
+
+            $response = $categoria->delete_categoria($id_categoria);
+        } else {
+            $response = "No se ha especificado un identificador.";
+        }
+        echo $response;
     }
 
     public function nueva_categoria() {
@@ -55,52 +65,10 @@ class Admin extends Profesor {
             $this->load->model('Categoria_model');
             $categoria = new Categoria_model();
             $exito = $categoria->insertar_categoria($nombre, $limite);
-
-            /* los mensajes no se recogen por ajax asi que de momento no funcinan
-              if ($this->db->_error_message()) {
-              $jsondata["success"] = False; // Or do whatever you gotta do here to raise an error
-              $jsondata["mensaje"] = sprintf('Error en la base de datos.');
-              } elseif ($exito) {
-              $jsondata["success"] = True;
-              $jsondata["mensaje"] = sprintf("ok");
-              } else {
-              $jsondata["success"] = false;
-              $jsondata["mensaje"] = sprintf('No se modifico la categoria.');
-              }
-             * 
-             */
             $this->configuracion();
         } else {
             $this->configuracion();
-            echo 'nada';
         }
-    }
-
-    public function eliminar_categoria($id_categoria) {
-        /*
-         * 1.- Comprobar si hay tareas con esta categoria.
-         * 
-         * 2.- Si no hay tareas con esa categoria eliminar la categoria y todos 
-         * los limites en la tabla limites categoria alumnos. 
-         */
-        $this->load->model('Categoria_model');
-        $categoria = new Categoria_model();
-
-        $categoria->delete_categoria($id_categoria);
-        /* ♥♥♥♥♥OPCIONAL♥♥♥♥♥
-          if ($this->db->_error_message()) {
-          $jsondata["success"] = False; // Or do whatever you gotta do here to raise an error
-          $jsondata["mensaje"] = sprintf('Error en la base de datos.');
-          } elseif ($this->db->affected_rows() > 0) {
-          $jsondata["success"] = True;
-          $jsondata["mensaje"] = sprintf("La categoria se elimino correctamente.");
-          } else {
-          $jsondata["success"] = false;
-          $jsondata["mensaje"] = sprintf('No se pudo eliminar la categoria. Esta siendo usada por una tarea.');
-          }
-          echo json_encode($jsondata, JSON_FORCE_OBJECT);
-         */
-        $this->configuracion();
     }
 
     public function eliminar_curso($id_curso) {
@@ -157,7 +125,7 @@ class Admin extends Profesor {
         /* Ahora data tiene toda la informacion de las tablas de curso y categoria.
          * para que el administrador pueda verlas en su vista y eliminarlas.
          */
-        $this->load->view('admin/configuracion', $data);
+        $this->load->view('admin/vista_configuracion', $data);
     }
 
     public function nuevo_alumno() {
@@ -189,7 +157,6 @@ class Admin extends Profesor {
         $apellido1 = $this->input->post('apellido1');
         $apellido2 = $this->input->post('apellido2');
         $administrador = $this->input->post('administrador');
-        var_dump($_POST);
         if ($nombre != FALSE && $apellido1 != FALSE && $apellido2 != FALSE) {
             $this->load->model('Profesor_model');
             $profesor = new Profesor_model();
