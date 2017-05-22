@@ -1,5 +1,5 @@
 <?php
-    echo '
+echo '
     <table >
     <thead>
         <tr>
@@ -28,15 +28,15 @@
         </tr>
     </thead>
     <tbody>';
-    $dia = [1 => 'Lunes', 2 => 'Martes', 3 => 'Miercoles', 4 => 'Jueves', 5 => 'Viernes',];
-    foreach ($talleres as $taller) {
-        if ($taller['activo']) {
-            echo '<tr class="taller_deshabilitado">';
-        } else {
-            echo '<tr class="taller_habilitado">';
-        }
-        echo '<tr>';
-        echo '
+$dia = [1 => 'Lunes', 2 => 'Martes', 3 => 'Miercoles', 4 => 'Jueves', 5 => 'Viernes',];
+foreach ($talleres as $taller) {
+    if ($taller['activo']) {
+        echo '<tr class="taller_deshabilitado">';
+    } else {
+        echo '<tr class="taller_habilitado">';
+    }
+    echo '<tr>';
+    echo '
             <td>
             ' . $taller['nombre'] . '
             </td>
@@ -56,17 +56,21 @@
             ' . substr($taller['hora_fin'], -5) . '
             </td>
             <td>';
-        if ($taller['activo']) {
-            echo '<button class = "deshabilitar_taller">Deshabilitar</button>';
-        } else {
-            echo '<button class = "habilitar_taller">Habilitar</button>';
-        }
-        echo '</td>
-        </tr>';
+    if ($taller['activo']) {
+//                                                                                                                $id_taller, $dia, $hora_inicio, $hora_fin
+        echo '<a href="http://localhost/Racons/index.php/Profesor/deshabilitar_taller/' . $taller['id_taller'] . '/' . $taller['dia'] . '/' . $taller['hora_inicio'] . '/' . $taller['hora_fin'] . '">'
+        . '<button class = "deshabilitar_taller">Deshabilitar</button>'
+        . '</a>';
+    } else {
+        echo '<a href="http://localhost/Racons/index.php/Profesor/habilitar_taller/' . $taller['id_taller'] . '/' . $taller['dia'] . '/' . $taller['hora_inicio'] . '/' . $taller['hora_fin'] . '">'
+        . '<button class = "deshabilitar_taller">Habilitar</button>'
+        . '</a>';
     }
-    echo '</tbody>';
-    echo '</table>';
-
+    echo '</td>
+        </tr>';
+}
+echo '</tbody>';
+echo '</table>';
 ?>
 <script>
 //    window.onload = function () {

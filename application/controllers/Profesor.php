@@ -31,14 +31,40 @@ class Profesor extends CI_Controller {
          */
     }
 
-    public function activar_taller($id_taller) {
+    /*
+     * Habilita taller.
+     */
+
+    public function habilitar_taller($id_taller, $dia, $hora_inicio, $hora_fin) {
         /*
          * 1.- Comrueba si la taller pertenece al profesosr.
          * 
          * 2.- Modifica el atributo activo de la taller.
          * 
-         * 3.- Con Ajax si todo salio bien, modificar la vista.
          */
+        $this->load->model('Taller_model');
+        $taller = new Taller_model();
+        $exito = $taller->habilitar_taller($id_taller, $dia, $hora_inicio, $hora_fin);
+        echo $exito;
+        $this->mis_talleres();
+    }
+
+    /*
+     * Deshabilita taller.
+     */
+
+    public function deshabilitar_taller($id_taller) {
+        /*
+         * 1.- Comrueba si la taller pertenece al profesosr.
+         * 
+         * 2.- Modifica el atributo activo de la taller.
+         * 
+         */
+        $this->load->model('Taller_model');
+        $taller = new Taller_model();
+        $exito = $taller->deshabilitar_taller($id_taller);
+        echo $exito;
+        $this->mis_talleres();
     }
 
     /*
@@ -49,16 +75,12 @@ class Profesor extends CI_Controller {
         /*
          * 1.-Recoger los datos por post.
          * 
-         * 2.-El profesor puede añadir la taller a un grupo existente o crear uno
-         * nuevo. Comprobar si por post hay id_grupo =! null. En tal caso
-         * crea el grupo. Sino coger el id del grupo por post.
-         * 
-         * 3.-Comprobar si existe la presentación y el grupo.
+         * 3.-Comprobar si existe la presentación.
          *
-         * 4.-Comprobar si el profesor tiene otras talleres a la misma hora y dia.
-         * Insertar nueva taller
+         * 4.-Comprobar si el profesor tiene otros talleres a la misma hora y dia.
+         * Insertar nuevo taller.
          * 
-         * 5.-Ir a la vista mis talleres. O usar Ajax ☺-☻¬.
+         * 5.-Ir a la vista mis talleres.
          * 
          */
         $nombre = $this->input->post('nombre');
@@ -73,7 +95,6 @@ class Profesor extends CI_Controller {
         $aforamiento = $this->input->post('aforamiento');
         $i = 0;
         $id_cursos = [];
-        var_dump($_POST);
         while ($this->input->post('id_curso' + $i) != FALSE) {
             $aux = $this->input->post('id_curso' + $i);
             $aux = (int) $aux;
@@ -86,12 +107,10 @@ class Profesor extends CI_Controller {
             $id_profesor = $this->session->userdata('id_profesor');
             $exito = $taller->insertar_taller($id_profesor, $nombre, $id_categoria, $descripcion, $id_cursos, $dia, $hora_inicio_hh, $hora_inicio_mm, $hora_fin_hh, $hora_fin_mm, $activo, $aforamiento);
             echo $exito;
-            echo '☺☻☺☻';
-//            $this->configuracion();
+            $this->mis_talleres();
         } else {
-//            $this->configuracion();
+            $this->mis_talleres();
         }
-        echo 'oooooooo';
     }
 
     /*
@@ -122,12 +141,8 @@ class Profesor extends CI_Controller {
         $this->load->model('Categoria_model');
         $categoria = new Categoria_model();
 
-//        $data['talleres_activas'] = $taller->talleres_activas();
-//        $data['talleres_desactivadas'] = $taller->talleres_desactivadas();
-        echo $this->session->userdata('id_profesor');
         $data['talleres'] = $taller->taller_profesor($this->session->userdata('id_profesor'));
         $data['categorias'] = $categoria->categorias();
-        var_dump($data['talleres']);
         $this->load->view('profesor/vista_mis_talleres', $data);
     }
 

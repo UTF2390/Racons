@@ -30,6 +30,45 @@ class Taller_model extends CI_Model {
         return $q->result_array();
     }
 
+    public function deshabilitar_taller($id_taller) {
+        $data = array(
+            'activo' => FALSE
+        );
+        $this->db->where('id_profesor', $this->session->userdata('id_profesor'));
+        $this->db->where('id_taller', $id_taller);
+        $this->db->update('taller', $data);
+
+        if ($this->db->affected_rows() > 0) {
+            $response = "ok";
+        } else {
+            $response = "404";
+        }
+        return $response;
+    }
+
+    public function habilitar_taller($id_taller, $dia, $hora_inicio, $hora_fin) {
+        $id_profesor = $this->session->userdata('id_profesor');
+//        $this->db->query('
+//            DECLARE  filas INT;
+//            set num_rows = (SELECT COUNT(*) FROM taller
+//                    WHERE id_profesor = ' . $id_profesor . ' and id_taller = ' . $id_taller . ' and dia = ' . $dia . '  and 
+//                    ( hora_inicio > "' . $hora_fin . '" or hora_fin < "' . $hora_inicio . '"));
+//            UPDATE taller
+//            SET activo = (filas = 0)
+//            WHERE id_taller = ' . $id_taller.';');
+        $this->db->query('UPDATE taller AS t
+            SET activo = ((SELECT COUNT(*) FROM taller AS o
+                    WHERE o.id_profesor = ' . $id_profesor . ' and o.id_taller = ' . $id_taller . ' and o.dia = ' . $dia . '  and 
+                    ( o.hora_inicio > "' . $hora_fin . '" or o.hora_fin < "' . $hora_inicio . '")) = 0)
+            WHERE id_taller = ' . $id_taller.';');
+        if ($this->db->affected_rows() > 0) {
+            $response = "ok";
+        } else {
+            $response = "404";
+        }
+        return $response;
+    }
+
     public function update_categoria($id_categoria, $limite, $nombre) {
         $data = array(
             'id_categoria' => $id_categoria,
