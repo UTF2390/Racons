@@ -58,7 +58,7 @@ foreach ($talleres as $taller) {
             <td>';
     if ($taller['activo']) {
 //                                                                                                                $id_taller, $dia, $hora_inicio, $hora_fin
-        echo '<a href="http://localhost/Racons/index.php/Profesor/deshabilitar_taller/' . $taller['id_taller'] . '/' . $taller['dia'] . '/' . $taller['hora_inicio'] . '/' . $taller['hora_fin'] . '">'
+        echo '<a href="http://localhost/Racons/index.php/Profesor/deshabilitar_taller/' . $taller['id_taller'] . '">'
         . '<button class = "deshabilitar_taller">Deshabilitar</button>'
         . '</a>';
     } else {
@@ -67,6 +67,11 @@ foreach ($talleres as $taller) {
         . '</a>';
     }
     echo '</td>
+        <td>
+            <a href="http://localhost/Racons/index.php/Profesor/modificar_taller/' . $taller['id_taller'] . '">'
+    . '<button type="button" >Modificar</button>'
+    . '</a>
+        </td>
         </tr>';
 }
 echo '</tbody>';
@@ -75,31 +80,31 @@ echo '</table>';
 <script>
 //    window.onload = function () {
 //♦♦♦♦♦♦♦♦♦♦♦ No terminado no funciona♦♦♦♦♦♦♦♦♦♦
-    $(".deshabilitar_taller").click(function () {
-        var id_categoria = $(this).closest("tr")
-                .find(".id_categoria")
-                .val();
-
-        var data = {'id_categoria': id_categoria};
-
-        var url = "http://localhost/Racons/index.php/admin/eliminar_categoria";
-        var tr = $(this).closest("tr");
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: data
-
-        }).done(function (response) {
-            if (response = "ok") {
-                tr.remove();
-                console.log('Eliminado correctamente.');
-            } else {
-                alert('No se pudo eliminar correctamente.');
-            }
-        }).fail(function (textStatus) {
-            console.log("La solicitud a fallado: ");
-            alert("La solicitud a fallado: ");
-        });
-    });
+//    $(".deshabilitar_taller").click(function () {
+//        var id_categoria = $(this).closest("tr")
+//                .find(".id_categoria")
+//                .val();
+//
+//        var data = {'id_categoria': id_categoria};
+//
+//        var url = "http://localhost/Racons/index.php/admin/eliminar_categoria";
+//        var tr = $(this).closest("tr");
+//        $.ajax({
+//            type: 'POST',
+//            url: url,
+//            data: data
+//
+//        }).done(function (response) {
+//            if (response = "ok") {
+//                tr.remove();
+//                console.log('Eliminado correctamente.');
+//            } else {
+//                alert('No se pudo eliminar correctamente.');
+//            }
+//        }).fail(function (textStatus) {
+//            console.log("La solicitud a fallado: ");
+//            alert("La solicitud a fallado: ");
+//        });
+//    });
 //    }
 </script>

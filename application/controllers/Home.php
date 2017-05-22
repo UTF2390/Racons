@@ -19,7 +19,8 @@ class Home extends CI_Controller {
 
         $newdata = ['admin' => ['username' => 'johndoe',
                 'email' => 'johndoe@some-site.com',
-                'id_profesor' => 2], 'id_profesor' => 2];
+                'id_profesor' => 2], 
+            'id_profesor' => 2];
 
         $this->session->set_userdata($newdata);
 

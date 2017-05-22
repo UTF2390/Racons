@@ -21,17 +21,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
 
         <div id="container" class="col12">
-
             <div class=""><h2>Talleres</h3>
                     <?php
+                    $data['taller'] = $taller;
                     $data['categorias'] = $categorias;
-                    if (empty($talleres) != TRUE) {
-                        $this->load->view('profesor/tabla_taller');
+                    if (empty($taller) != TRUE) {
+                        $this->load->view('profesor/form_modificar_taller', $data);
                     }
-                    echo '<h4>Añadir categoria</h2>';
-                    $this->load->view('profesor/form_nuevo_taller', $data);
                     ?>
             </div>
-        </div>
     </body>
 </html>

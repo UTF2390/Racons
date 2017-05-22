@@ -46,7 +46,7 @@ class Profesor extends CI_Controller {
         $taller = new Taller_model();
         $exito = $taller->habilitar_taller($id_taller, $dia, $hora_inicio, $hora_fin);
         echo $exito;
-        $this->mis_talleres();
+//        $this->mis_talleres();
     }
 
     /*
@@ -117,7 +117,7 @@ class Profesor extends CI_Controller {
      * Inserta un dia a la taller.
      */
 
-    public function modificar_taller() {
+    public function modificar_taller($id_taller) {
         /*
          * 1.- Comprueba si existe la taller y si pertenece al profesor.
          * 
@@ -126,6 +126,18 @@ class Profesor extends CI_Controller {
          * 
          * 3.- Inserta en la tabla el dia y la hora a la taller.
          */
+        $this->load->model('Taller_model');
+        $taller = new Taller_model();
+        $this->load->model('Categoria_model');
+        $categoria = new Categoria_model();
+        $data['categoria'] = $categoria->categorias();
+        $data['taller'] = $taller->get_taller($id_taller);
+        
+        if ($data['taller'] != FALSE && $data['categoria'] != FALSE) {
+            $this->load->view('profesor/vista_mis_talleres', $data);
+        } else {
+            redirect('/Profesor', 'refresh');
+        }
     }
 
     /*
@@ -140,7 +152,7 @@ class Profesor extends CI_Controller {
         $taller = new Taller_model();
         $this->load->model('Categoria_model');
         $categoria = new Categoria_model();
-
+        
         $data['talleres'] = $taller->taller_profesor($this->session->userdata('id_profesor'));
         $data['categorias'] = $categoria->categorias();
         $this->load->view('profesor/vista_mis_talleres', $data);
