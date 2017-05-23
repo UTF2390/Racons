@@ -7,17 +7,26 @@ class Admin extends Profesor {
 
     public function __construct() {
         parent::__construct();
+        $this->is_loggedIn();
     }
 
     public function index() {
-        $this->configuracion();
+        $this->horario();
+    }
+
+    public function is_loggedIn() {
+        $check_login = $this->session->userdata('admin');
+
+        if ($check_login === FALSE) {
+            redirect('http://localhost/Racons');
+        }
     }
 
     public function modificar_categoria() {
         /*
          * 1.- Modifica la categoria con los parametros pasados por post y ajax.
          */
-        //modificar categoria
+//modificar categoria
         $nombre = $this->input->post('nombre');
         $limite = $this->input->post('limite');
         $id_categoria = $this->input->post('id_categoria');
@@ -170,7 +179,7 @@ class Admin extends Profesor {
     }
 
     public function añadir_alumnos_con_fichero() {
-        //...
+//...
     }
 
 }

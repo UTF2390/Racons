@@ -9,13 +9,12 @@ class Profesor extends CI_Controller {
         //Cargar el modelo
         //Es la bariable que se envia a la vista para mostrar
         //o ocultar las opciones adicionales del administrador.
-        $this->load->model('Profesor_model');
-//        $data['admin'] = FALSE;
     }
+
 
     public function index() {
 //        $this->load->view('profesor/vista_profesor');
-        $this->mis_tareas();
+        $this->horario();
     }
 
     /*
@@ -146,11 +145,16 @@ class Profesor extends CI_Controller {
 
     public function horario() {
         $this->load->model('Taller_model');
+        $this->load->model('Horario_model');
+
         $taller = new Taller_model();
+        $horario = new Horario_model();
         $id_profesor = $taller->session->userdata('id_profesor');
+
         $data['horario'] = $taller->taller_profesor_horario($id_profesor);
-        var_dump($data);
-        
+        $data['numero_dias'] = $horario->dias_semana();
+
+        $this->load->view('profesor/vista_horario', $data);
     }
 
 }
