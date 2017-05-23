@@ -14,21 +14,8 @@ class Profesor extends CI_Controller {
     }
 
     public function index() {
-        $this->load->view('profesor/vista_profesor');
-//        $this->talleres();
-    }
-
-    public function desactivar_taller() {
-        /*
-         * 1.- Comprueba si la taller pertenece al profesor.
-         * 
-         * 2.- Cambia el atributo activo de taller y elimina en el 
-         * historial los alumnos que estaban apuntados a esta.
-         * 
-         * 3.-Respuesta recogida por Ajax. El javascrip informara al profesor y
-         * modifica el html para marcar como desactivado la taller. O, sin Ajax,:-( cargar la 
-         * vista vista_mis_talleres.
-         */
+//        $this->load->view('profesor/vista_profesor');
+        $this->mis_tareas();
     }
 
     /*
@@ -45,8 +32,7 @@ class Profesor extends CI_Controller {
         $this->load->model('Taller_model');
         $taller = new Taller_model();
         $exito = $taller->habilitar_taller($id_taller, $dia, $hora_inicio, $hora_fin);
-        echo $exito;
-//        $this->mis_talleres();
+        $this->mis_talleres();
     }
 
     /*
@@ -132,7 +118,7 @@ class Profesor extends CI_Controller {
         $categoria = new Categoria_model();
         $data['categoria'] = $categoria->categorias();
         $data['taller'] = $taller->get_taller($id_taller);
-        
+
         if ($data['taller'] != FALSE && $data['categoria'] != FALSE) {
             $this->load->view('profesor/vista_mis_talleres', $data);
         } else {
@@ -152,10 +138,19 @@ class Profesor extends CI_Controller {
         $taller = new Taller_model();
         $this->load->model('Categoria_model');
         $categoria = new Categoria_model();
-        
+
         $data['talleres'] = $taller->taller_profesor($this->session->userdata('id_profesor'));
         $data['categorias'] = $categoria->categorias();
         $this->load->view('profesor/vista_mis_talleres', $data);
+    }
+
+    public function horario() {
+        $this->load->model('Taller_model');
+        $taller = new Taller_model();
+        $id_profesor = $taller->session->userdata('id_profesor');
+        $data['horario'] = $taller->taller_profesor_horario($id_profesor);
+        var_dump($data);
+        
     }
 
 }

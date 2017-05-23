@@ -3,13 +3,24 @@
 class Taller_model extends CI_Model {
 
     public function taller_profesor($id_profesor) {
-
         $q = $this->db->query('SELECT c.nombre as nombre_categoria, id_taller, t.nombre, aforamiento, dia, hora_inicio, hora_fin, activo, id_profesor, c.id_categoria as c_id_categoria, participantes, descripcion, t.id_categoria 
            FROM categoria c, taller t
         WHERE id_profesor =' . $id_profesor . '
         AND c.id_categoria = t.id_categoria
         ORDER BY t.nombre, dia , hora_inicio');
         return $q->result_array();
+    }
+
+    public function taller_profesor_horario($id_profesor) {
+        for ($i = 1; $i < 6; $i++) {
+            $q = $this->db->query('SELECT *
+            FROM  taller 
+            WHERE id_profesor =' . $id_profesor . '
+            AND dia = '.$i.'
+            ORDER BY hora_inicio, nombre');
+            $horario[$i] = $q->result_array();
+        }
+        return $horario;
     }
 
     public function get_taller($id_taller) {
@@ -44,12 +55,19 @@ class Taller_model extends CI_Model {
     }
 
     public function habilitar_taller($id_taller, $dia, $hora_inicio, $hora_fin) {
+//        $hora_inicio = intval(str_replace(':','',$hora_inicio));
+//        $hora_fin = intval(str_replace(':','',$hora_fin));
         $id_profesor = $this->session->userdata('id_profesor');
-        $this->db->query('UPDATE taller as t
-            SET activo = not exists((SELECT 1 FROM (SELECT * FROM taller) as o
-                    WHERE o.id_profesor = ' . $id_profesor . ' and o.id_taller != ' . $id_taller . ' and o.dia = ' . $dia . '  and 
-                    (( o.hora_inicio >= "' . $hora_fin . '" and o.hora_inicio <= "' . $hora_inicio . '") or (o.hora_fin <= "' . $hora_inicio . '" or o.hora_fin >= "' . $hora_fin . '"))))
-            WHERE t.id_taller = ' . $id_taller);
+        $this->db->query('
+            UPDATE taller as t 
+            SET activo = (SELECT IF (0 = (SELECT COUNT(*) FROM (SELECT * FROM taller) as o,
+    (SELECT * FROM taller where id_taller = ' . $id_taller . ') as b
+WHERE o.id_profesor = ' . $id_profesor . ' and o.id_taller != ' . $id_taller . ' and o.dia = b.dia  and o.activo = 1 and
+                    (( o.hora_inicio >= b.hora_fin and o.hora_inicio <= b.hora_inicio) or 
+                    (o.hora_fin <= b.hora_inicio and o.hora_fin >= b.hora_fin)))
+                        ,true
+                        ,false))
+                WHERE t.id_taller = ' . $id_taller);
 
         if ($this->db->affected_rows() > 0) {
             $response = "ok";
