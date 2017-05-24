@@ -1,4 +1,4 @@
-<form enctype="multipart/form-data" action="<?php base_url() ?>nuevo_taller" method='POST'>
+<form enctype="multipart/form-data" action="<?php base_url() ?>nuevo_taller" method='POST' class="col">
     <text>Nombre</text>
     <input type='text' id='nombre' name="nombre"></input>
     <text>Categoria</text>
@@ -10,9 +10,19 @@
         ?>
     </select>
 
-    <button type="button" onclick="nuevo_curso();" id="baton_id_curso">+Curso</button><br>
     <text>Descripcion</text>
     <input type="text" name="descripcion"/><br>
+    <text>Cursos</text>
+    <div class="">
+    //<?php
+    $c = 0;
+    foreach ($cursos as $curso) {
+        echo '<input type="checkbox" name="curso' . $c . '" value="' . $curso['id_curso'] . '">' . $curso['curso'] . ' </input>';
+        $c += 1;
+    }
+    ?>
+    </div>
+</div>
     <text>Dia</text>
     <select name="dia">
         <?php

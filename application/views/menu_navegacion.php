@@ -54,15 +54,18 @@
     if ($this->session->userdata('alumno') != null) {
         echo '<a href = "' . base_url() . 'index.php/Alumno/horario">Horario</a>';
         echo '<a href = "' . base_url() . 'index.php/Alumno/talleres">Talleres</a>';
+        echo '<a href = "' . base_url() . 'index.php/Home/logout">Logout</a>';
     } elseif ($this->session->userdata('profesor') != null) {
         echo '<a href = "' . base_url() . 'index.php/Profesor/horario">Horario</a>';
         echo '<a href = "' . base_url() . 'index.php/Profesor/mis_talleres">Mis Talleres</a>';
         echo '<a href = "' . base_url() . 'index.php/Profesor/alumnos">Alumnos</a>';
+        echo '<a href = "' . base_url() . 'index.php/Home/logout">Logout</a>';
     } elseif ($this->session->userdata('admin') != null) {
         echo '<a href = "' . base_url() . 'index.php/Admin/horario">Horario</a>';
         echo '<a href = "' . base_url() . 'index.php/Admin/mis_talleres">Mis Talleres</a>';
         echo '<a href = "' . base_url() . 'index.php/Admin/alumnos">Alumnos</a>';
         echo '<a href = "' . base_url() . 'index.php/Admin/configuracion">Configuración</a>';
+        echo '<a href = "' . base_url() . 'index.php/Home/logout">Logout</a>';
     }
     ?>
 </div>

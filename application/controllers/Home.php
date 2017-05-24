@@ -17,8 +17,7 @@ class Home extends CI_Controller {
          * o la vista login para logear/registrar.
          */
 
-        session_destroy();
-        $newdata = ['profesor' => ['username' => 'johndoe',
+        $newdata = ['admin' => ['username' => 'johndoe',
                 'email' => 'johndoe@some-site.com',
                 'id_profesor' => 2],
             'id_profesor' => 2];
@@ -57,6 +56,17 @@ class Home extends CI_Controller {
         //Existe el usuario? Y guarda los datos en sesión.
         $userdata = $usuario->login($password, $nick);
         $this->session->userdata($userdata['usuario']);
+    }
+
+    public function logout() {
+        session_destroy();
+        $newdata = ['admin' => ['username' => 'johndoe',
+                'email' => 'johndoe@some-site.com',
+                'id_profesor' => 2],
+            'id_profesor' => 2];
+
+        $this->session->set_userdata($newdata);
+        $this->load->view('logout/vista_login');
     }
 
 }

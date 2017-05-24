@@ -11,10 +11,9 @@ class Profesor extends CI_Controller {
         //o ocultar las opciones adicionales del administrador.
     }
 
-
     public function index() {
 //        $this->load->view('profesor/vista_profesor');
-        $this->horario();
+        redirect('Profesor/horario');
     }
 
     /*
@@ -82,15 +81,14 @@ class Profesor extends CI_Controller {
         $id_cursos = [];
         while ($this->input->post('id_curso' + $i) != FALSE) {
             $aux = $this->input->post('id_curso' + $i);
-            $aux = (int) $aux;
             array_push($id_cursos, $aux);
             $i++;
         }
-        if (TRUE) {
+        if ($nombre && $aforamiento != FALSE) {
             $this->load->model('Taller_model');
             $taller = new Taller_model();
             $id_profesor = $this->session->userdata('id_profesor');
-            $exito = $taller->insertar_taller($id_profesor, $nombre, $id_categoria, $descripcion, $id_cursos, $dia, $hora_inicio_hh, $hora_inicio_mm, $hora_fin_hh, $hora_fin_mm, $activo, $aforamiento);
+            $exito = $taller->insertar_taller($id_profesor, $nombre, $id_categoria, $descripcion, $id_cursos, $dia, $hora_inicio_hh, $hora_inicio_mm, $hora_fin_hh, $hora_fin_mm, $aforamiento);
             echo $exito;
             $this->mis_talleres();
         } else {
@@ -137,9 +135,12 @@ class Profesor extends CI_Controller {
         $taller = new Taller_model();
         $this->load->model('Categoria_model');
         $categoria = new Categoria_model();
+        $this->load->model('Curso_model');
+        $curso = new Curso_model();
 
         $data['talleres'] = $taller->taller_profesor($this->session->userdata('id_profesor'));
         $data['categorias'] = $categoria->categorias();
+        $data['cursos'] = $curso->cursos();
         $this->load->view('profesor/vista_mis_talleres', $data);
     }
 

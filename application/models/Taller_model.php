@@ -16,7 +16,7 @@ class Taller_model extends CI_Model {
             $q = $this->db->query('SELECT *
             FROM  taller 
             WHERE id_profesor =' . $id_profesor . '
-            AND dia = '.$i.'
+            AND dia = '.$i.' AND activo = 1
             ORDER BY hora_inicio, nombre');
             $horario[$i] = $q->result_array();
         }
@@ -119,7 +119,7 @@ WHERE o.id_profesor = ' . $id_profesor . ' and o.id_taller != ' . $id_taller . '
         }
     }
 
-    function insertar_taller($id_profesor, $nombre, $id_categoria, $descripcion, $id_cursos, $dia, $hora_inicio_hh, $hora_inicio_mm, $hora_fin_hh, $hora_fin_mm, $activo, $aforamiento) {
+    function insertar_taller($id_profesor, $nombre, $id_categoria, $descripcion, $id_cursos, $dia, $hora_inicio_hh, $hora_inicio_mm, $hora_fin_hh, $hora_fin_mm, $aforamiento) {
 
         $data = array(
             'id_profesor' => $id_profesor,
@@ -129,7 +129,6 @@ WHERE o.id_profesor = ' . $id_profesor . ' and o.id_taller != ' . $id_taller . '
             'dia' => $dia,
             'hora_inicio' => "00:" + $hora_inicio_hh + ":" + $hora_inicio_mm,
             'hora_inicio' => "00:" + $hora_fin_hh + ":" + $hora_fin_mm,
-            'activo' => $activo,
             'aforamiento' => $aforamiento
         );
         $this->db->insert('taller', $data);
