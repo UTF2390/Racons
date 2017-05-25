@@ -14,7 +14,7 @@
     <input type="text" name="descripcion"/><br>
     <text>Cursos</text>
     <div class="">
-    //<?php
+    <?php
     $c = 0;
     foreach ($cursos as $curso) {
         echo '<input type="checkbox" name="curso' . $c . '" value="' . $curso['id_curso'] . '">' . $curso['curso'] . ' </input>';

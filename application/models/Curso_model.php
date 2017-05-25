@@ -9,6 +9,12 @@ class Curso_model extends CI_Model {
         return $q->result_array();
     }
 
+    public function existe_curso($id_curso) {
+        $q = $this->db->where('id_curso', $id_curso);
+        $q = $this->db->get('curso');
+        return $q->num_rows() == 1;
+    }
+
     //Existen talleres de la categoria con id == id_categoria?
     function existe_alumnos_talleres_curso($id_curso) {
         $id_curso = (int) $id_curso;

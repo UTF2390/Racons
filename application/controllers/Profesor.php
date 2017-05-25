@@ -59,7 +59,7 @@ class Profesor extends CI_Controller {
         /*
          * 1.-Recoger los datos por post.
          * 
-         * 3.-Comprobar si existe la presentación.
+         * 3.-Comprobar si existe el taller.
          *
          * 4.-Comprobar si el profesor tiene otros talleres a la misma hora y dia.
          * Insertar nuevo taller.
@@ -68,6 +68,7 @@ class Profesor extends CI_Controller {
          * 
          */
         $nombre = $this->input->post('nombre');
+        $id_taller = $this->input->post('id_taller');
         $id_categoria = $this->input->post('id_categoria');
         $descripcion = $this->input->post('descripcion');
         $dia = $this->input->post('dia');
@@ -88,9 +89,15 @@ class Profesor extends CI_Controller {
             $this->load->model('Taller_model');
             $taller = new Taller_model();
             $id_profesor = $this->session->userdata('id_profesor');
-            $exito = $taller->insertar_taller($id_profesor, $nombre, $id_categoria, $descripcion, $id_cursos, $dia, $hora_inicio_hh, $hora_inicio_mm, $hora_fin_hh, $hora_fin_mm, $aforamiento);
-            echo $exito;
-            $this->mis_talleres();
+            $exito = $taller->modificar_taller($id_profesor, $nombre, $id_categoria, $descripcion, $dia, $hora_inicio_hh, $hora_inicio_mm, $hora_fin_hh, $hora_fin_mm, $aforamiento);
+            if ($exito) {
+                if ($id_cursos != [] && $id_taller != FALSE) {
+                    $taller->insertar_curso_taller($id_cursos, $id_taller);
+                }
+                $this->mis_talleres();
+            } else {
+                $this->mis_talleres();
+            }
         } else {
             $this->mis_talleres();
         }
@@ -109,17 +116,46 @@ class Profesor extends CI_Controller {
          * 
          * 3.- Inserta en la tabla el dia y la hora a la taller.
          */
-        $this->load->model('Taller_model');
-        $taller = new Taller_model();
-        $this->load->model('Categoria_model');
-        $categoria = new Categoria_model();
-        $data['categoria'] = $categoria->categorias();
-        $data['taller'] = $taller->get_taller($id_taller);
+        if ($this->input->post('modificar_taller')) {
+            $data['nombre'] = $this->input->post('nombre');
+            $data['id_categoria'] = $this->input->post('id_categoria');
+            $data['descripcion'] = $this->input->post('descripcion');
+            $data['dia'] = $this->input->post('dia');
+            $data['hora_inicio_hh'] = $this->input->post('hora_inicio_hh');
+            $data['hora_inicio_mm'] = $this->input->post('hora_inicio_mm');
+            $data['hora_fin_hh'] = $this->input->post('hora_fin_hh');
+            $data['hora_fin_mm'] = $this->input->post('hora_fin_mm');
+            $data['aforamiento'] = $this->input->post('aforamiento');
+            $i = 0;
+            $id_cursos = [];
+            while ($this->input->post('id_curso' + $i) != FALSE) {
+                $aux = $this->input->post('id_curso' + $i);
+                array_push($id_cursos, $aux);
+                $i++;
+            }
+            $data['id_profesor'] = $this->session->userdata('id_profesor');
+            if ($data['dia'] >= 1 && $data['dia'] <= 5 && $data['id_categoria'] != FALSE && $data['id_profesor'] != FALSE) {
+                $this->load->model('Taller_model');
+                $taller = new Taller_model();
 
-        if ($data['taller'] != FALSE && $data['categoria'] != FALSE) {
-            $this->load->view('profesor/vista_mis_talleres', $data);
+                $respuesta = $taller->modificar_taller($data['id_profesor'], $data['nombre'], $data['id_categoria'], $data['descripcion'], $id_cursos, $data['dia'], $data['hora_inicio_hh'], $data['hora_inicio_mm'], $data['hora_fin_hh'], $data['hora_fin_mm'], $data['aforamiento'], $id_taller);
+//                echo 'hola☺☺☺';
+                redirect('Profesor/mis_talleres');
+            }
         } else {
-            redirect('/Profesor', 'refresh');
+            $this->load->model('Taller_model');
+            $this->load->model('Categoria_model');
+            $taller = new Taller_model();
+            $categoria = new Categoria_model();
+
+            $data['categorias'] = $categoria->categorias();
+            $aux = $taller->get_taller($id_taller);
+            if ($aux != FALSE && $data['categorias'] != FALSE) {
+                $data['taller'] = $aux[0];
+                $this->load->view('profesor/vista_modificar_taller', $data);
+            } else {
+                redirect('Profesor/mis_talleres');
+            }
         }
     }
 
