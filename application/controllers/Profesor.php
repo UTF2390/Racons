@@ -89,7 +89,7 @@ class Profesor extends CI_Controller {
             $this->load->model('Taller_model');
             $taller = new Taller_model();
             $id_profesor = $this->session->userdata('id_profesor');
-            $exito = $taller->modificar_taller($id_profesor, $nombre, $id_categoria, $descripcion, $dia, $hora_inicio_hh, $hora_inicio_mm, $hora_fin_hh, $hora_fin_mm, $aforamiento);
+            $exito = $taller->insertar_taller($id_profesor, $nombre, $id_categoria, $descripcion, $dia, $hora_inicio_hh, $hora_inicio_mm, $hora_fin_hh, $hora_fin_mm, $aforamiento);
             if ($exito) {
                 if ($id_cursos != [] && $id_taller != FALSE) {
                     $taller->insertar_curso_taller($id_cursos, $id_taller);

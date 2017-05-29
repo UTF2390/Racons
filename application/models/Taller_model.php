@@ -11,7 +11,7 @@ class Taller_model extends CI_Model {
         return $q->result_array();
     }
 
-    public function modificar_taller($id_profesor, $nombre, $id_categoria, $descripcion, $id_cursos, $dia, $hora_inicio_hh, $hora_inicio_mm, $hora_fin_hh, $hora_fin_mm, $aforamiento,$id_taller) {
+    public function modificar_taller($id_profesor, $nombre, $id_categoria, $descripcion, $id_cursos, $dia, $hora_inicio_hh, $hora_inicio_mm, $hora_fin_hh, $hora_fin_mm, $aforamiento, $id_taller) {
         $data = array(
             'id_profesor' => $id_profesor,
             'nombre' => $nombre,
@@ -28,7 +28,7 @@ class Taller_model extends CI_Model {
         var_dump($hora_fin_mm);
         $this->db->where('id_taller', $id_taller);
         $this->db->update('taller', $data);
-        $this->insertar_curso_taller($id_cursos,$id_taller);
+        $this->insertar_curso_taller($id_cursos, $id_taller);
         return $this->db->affected_rows() > 0;
     }
 
@@ -74,8 +74,9 @@ class Taller_model extends CI_Model {
             SET activo = (SELECT IF (0 = (SELECT COUNT(*) FROM (SELECT * FROM taller) as o,
     (SELECT * FROM taller where id_taller = ' . $id_taller . ') as b
 WHERE o.id_profesor = ' . $id_profesor . ' and o.id_taller != ' . $id_taller . ' and o.dia = b.dia  and o.activo = 1 and
-                    (( o.hora_inicio >= b.hora_fin and o.hora_inicio <= b.hora_inicio) or 
-                    (o.hora_fin <= b.hora_inicio and o.hora_fin >= b.hora_fin)))
+                    (( o.hora_inicio > b.hora_fin and o.hora_inicio < b.hora_inicio) or 
+                    (o.hora_fin < b.hora_inicio and o.hora_fin > b.hora_fin) or
+                    (b.hora_inicio < o.ap_hora_inicio and b.hora_fin > o.ap_hora_fin)))
                         ,true
                         ,false))
                 WHERE t.id_taller = ' . $id_taller);
@@ -143,6 +144,9 @@ WHERE o.id_profesor = ' . $id_profesor . ' and o.id_taller != ' . $id_taller . '
             'aforamiento' => $aforamiento
         );
         $this->db->insert('taller', $data);
+        $id_taller = $this->db->insert_id();
+
+        $this->insertar_curso_taller($id_cursos, $id_taller);
         return $this->db->affected_rows() > 0;
     }
 

@@ -8,7 +8,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>aeon_grid.css">
         <style>
             .horario{
-                background-color: 
             }
             .hora_inicio {
                 text-align: right;
@@ -19,7 +18,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 margin-bottom: 5px;
             }
             .cabezera_dia * {
-                height: 40px
+                height: 40px;
                 font_size:30;
                 display:inline;
             }

@@ -1,7 +1,6 @@
 <?php
 
 class Usuario_model extends CI_Model {
-
     public function login($password, $login) {
         $this->db->select('id_persona, login, nombre, apellido1, apellido2');
         $this->db->where('nick', $login);

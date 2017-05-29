@@ -17,10 +17,14 @@ class Home extends CI_Controller {
          * o la vista login para logear/registrar.
          */
 
-        $newdata = ['admin' => ['username' => 'johndoe',
+//        $newdata = ['admin' => ['username' => 'johndoe',
+//                'email' => 'johndoe@some-site.com',
+//                'id_profesor' => 2],
+//            'id_profesor' => 2];
+        $newdata = ['alumno' => ['username' => 'johndoe',
                 'email' => 'johndoe@some-site.com',
                 'id_profesor' => 2],
-            'id_profesor' => 2];
+            'id_alumno' => 8];
 
         $this->session->set_userdata($newdata);
 

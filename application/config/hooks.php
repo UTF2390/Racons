@@ -12,8 +12,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 $hook['pre_controller'] = array(
-                                'class'    => 'Profesor_hook',
+                                'class'    => 'Hook',
                                 'function' => 'is_loggedIn',
-                                'filename' => 'Profesor_hook.php',
+                                'filename' => 'Hook.php',
                                 'filepath' => 'hooks',
                                 );

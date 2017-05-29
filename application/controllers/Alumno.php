@@ -20,21 +20,44 @@ class Alumno extends CI_Controller {
      * El usuario se apunta de la taller con $id_tarea.
      */
 
-    public function apuntarse($id_tarea) {
-        //1.-Comprobar si la taller pertenece a la misma presentación 
-        //que el alumno.
-        //
-        //2.-Comprobar si ya esta apuntado a esta taller.
-        //
-        //3.- Si la opción libre_de_limites esta en FALSE, comprobar si el alumno
-        // ha superado el limite por categoria permitidos en los ultimos 30 dias. 
-        //
-        //4.-Insertar en el historial si hay plazas libres. En la consulta
-        //select tiene que haber un if comprobando si hay plazas luego 
-        //incrementar contador y despues insertar. De este modo se evitan errores.
-        //Tambien se puede hacer con un triger en la base de datos.
-        //
-        //5.-Ir a la vista presentaciones.
+    public function modificar_password_nick() {
+        $password1 = $this->input->post('password1');
+        $password2 = $this->input->post('password2');
+        $nick = $this->input->post('nick');
+
+        if ($password1 == $password2) {
+            if (strlen($password1) < 5) {
+                echo 'Contraseña demasiado corta';
+            } else {
+                $id_alumno = $this->session->userdata('id_alumno');
+                $this->load->model('Persona_model');
+                $persona = new Persona_model();
+                $persona->modificar($password1, $nick);
+            }
+        } else {
+            echo 'Las contraseñas no coinciden.';
+        }
+    }
+
+    public function apuntarse($id_taller) {
+        /* 1.-Comprobar si la taller pertenece a la misma presentación 
+          que el alumno.
+
+          2.- Si la opción libre_de_limites esta en FALSE, comprobar si el alumno
+          ha superado el limite por categoria permitidos en los ultimos 30 dias.
+
+          3.-Insertar en el historial si hay plazas libres. En la consulta
+          select tiene que haber un if comprobando si hay plazas luego
+          incrementar contador y despues insertar. De este modo se evitan errores.
+          Tambien se puede hacer con un triger en la base de datos.
+
+          5.-Ir a la vista presentaciones.
+         * 
+         */
+        $id_alumno = $this->session->userdata('id_alumno');
+        $q = $this->db->query("select apuntar(" . $id_taller . "," . $id_alumno . ")");
+        var_dump($q->result_array());
+//        $this->db->call_function('apuntar', $id_taller, $id_alumno);
     }
 
     /*
@@ -45,31 +68,12 @@ class Alumno extends CI_Controller {
         /*
          * 1.-Comprobar si el alumno esta apuntado a la taller borrarla. 
          * 
-         * 2.-Volver a vista_presentaciones.
+         * 2.-Volver a vista_horario.
          */
     }
 
-    /*
-     * Muestra una lista de los talleres y presentaciones a las que el alumno
-     * se apuntó.
-     */
 
-    public function historial() {
-        /*
-         * 1.- Pasar por parametro el array del historial a la vista y mostrar
-         * vist_historial.
-         */
-        $data['tareas'] = [['id' => 45556868, 'nombre' => 'Sala de poker', 'fecha' => '23/02/17'],
-                ['id' => 45556868, 'nombre' => 'Sala de poker', 'fecha' => '30/02/17'],
-                ['id' => 45556868, 'nombre' => 'Sala de poker', 'fecha' => '30/03/17']];
-        $this->load->view('alumno/vista_historial', $data);
-    }
-
-    /*
-     * Muestra las presentaciónes a las que el alumno se puede apuntar.
-     */
-
-    public function presentacion() {
+    public function horario() {
         /*
          * 1.-Conseguir tareas que pertenezcan a la presentacion (curso)
          * del alumno.
