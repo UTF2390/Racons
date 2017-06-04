@@ -2,6 +2,25 @@
 
 class Curso_model extends CI_Model {
 
+    
+    function filas(){
+	$consulta = $this->db->get('curso');
+	return $consulta->num_rows() ;
+    }
+    
+    function total_paginados($por_pagina,$star){
+        if(!$star){
+        $consulta = $this->db->query('SELECT * FROM `curso` LIMIT '.$por_pagina);
+        }else{
+            $consulta = $this->db->query('SELECT * FROM `curso` LIMIT '.$por_pagina. ' OFFSET '.$star);
+        }
+        if($consulta->num_rows()>0){
+            foreach($consulta->result() as $fila){
+                $data[] = $fila;
+            }
+            return $data;
+        }
+    }
     //terminado sin comprobar
     //Retorna la lista de cursos.
     public function cursos() {

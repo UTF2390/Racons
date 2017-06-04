@@ -5,61 +5,78 @@ include_once 'Profesor.php';
 
 class Admin extends Profesor {
 
+//    private $admin = TRUE;
+
     public function __construct() {
         parent::__construct();
-        $this->is_loggedIn();
+
+        If ($this->session->userdata['rol'] != 'admin') {
+            session_destroy();
+            redirect('/home');
+        }
     }
 
     public function index() {
-        $this->horario();
+//        $this->load->view('profesor/vista_profesor', $data);
+        //$data['admin'] = TRUE;
+        $this->load->model('Profesor_model');
+        $this->load->model('Alumno_model');
+        $this->load->model('Taller_model');
+        $data = array(
+            'num_profesores' => $this->Profesor_model->filas(),
+            'num_alumnos' => $this->Alumno_model->filas(),
+            'num_admin' => $this->Profesor_model->getNumAdmin(),
+            'num_taller' => $this->Taller_model->getNumTaller(),
+        );
+        $this->load->view('head');
+        $this->load->view('home', $data);
     }
 
-    public function is_loggedIn() {
-        $check_login = $this->session->userdata('admin');
-
-        if ($check_login === FALSE) {
-            redirect('http://localhost/Racons');
-        }
-    }
-
-    public function modificar_categoria() {
+    public function nuevo_alumno() {
         /*
-         * 1.- Modifica la categoria con los parametros pasados por post y ajax.
+         * 1.- Comprobar si hay una categoria con el mismo nombre.
+         * Si no hay coincidencia, añadirla.
          */
-//modificar categoria
+
         $nombre = $this->input->post('nombre');
-        $limite = $this->input->post('limite');
-        $id_categoria = $this->input->post('id_categoria');
-
-        if ($nombre != FALSE && $limite != FALSE && $id_categoria != FALSE) {
-            $limite = (int) $limite;
-            $this->load->model('Categoria_model');
-            $categoria = new Categoria_model();
-
-            $response = $categoria->update_categoria($id_categoria, $limite, $nombre);
+        $apellido1 = $this->input->post('apellido1');
+        $apellido2 = $this->input->post('apellido2');
+        $id_curso = $this->input->post('curso');
+        $id_curso = (int) $id_curso;
+        var_dump($_POST);
+        if ($nombre != FALSE && $apellido1 != FALSE && $apellido2 != FALSE && $id_curso != FALSE) {
+            $this->load->model('Alumno_model');
+            $alumno = new Alumno_model();
+            $exito = $alumno->insertar_Alumno($nombre, $apellido1, $apellido2, $id_curso);
+            redirect('admin/alumno');
         } else {
-            $response = "Error en el Ajax.";
-            echo $response;
+            //$this->configuracion();
+            echo 'Error en el form de nuevo_alumno.';
         }
     }
 
-    public function eliminar_categoria() {
+    public function nuevo_profesor() {
         /*
-         * 1.- Comprobar si hay tareas con esta categoria.
-         * 
-         * 2.- Si no hay tareas con esa categoria eliminar la categoria y todos 
-         * los limites en la tabla limites categoria alumnos. 
+         * 1.- Inserta un nuevo profesor.
          */
-        $id_categoria = $this->input->post('id_categoria');
-        if ($id_categoria != FALSE) {
-            $this->load->model('Categoria_model');
-            $categoria = new Categoria_model();
+        $nick = $this->input->post('nick');
+        $nombre = $this->input->post('nombre');
+        $apellido1 = $this->input->post('apellido1');
+        $apellido2 = $this->input->post('apellido2');
+        $password1 = $this->input->post('password1');
+        $password2 = $this->input->post('password2');
+        $administrador = $this->input->post('administrador');
 
-            $response = $categoria->delete_categoria($id_categoria);
+        if ($nombre != FALSE && $apellido1 != FALSE && $apellido2 != FALSE) {
+            $this->load->model('Profesor_model');
+            $profesor = new Profesor_model();
+            $administrador = (int) $administrador;
+            $exito = $profesor->insertar_profesor($nick, $nombre, $apellido1, $apellido2, $password1, $administrador);
+            redirect('techer');
         } else {
-            $response = "No se ha especificado un identificador.";
+            redirect('admin/profesor');
+            echo 'Error en el form de nuevo_profe.';
         }
-        echo $response;
     }
 
     public function nueva_categoria() {
@@ -74,29 +91,117 @@ class Admin extends Profesor {
             $this->load->model('Categoria_model');
             $categoria = new Categoria_model();
             $exito = $categoria->insertar_categoria($nombre, $limite);
-            $this->configuracion();
+            redirect('admin/categoria');
         } else {
-            $this->configuracion();
+            echo 'hola';
         }
     }
 
-    public function eliminar_curso($id_curso) {
+    public function categoria() {
+        $this->load->model('Categoria_model');
+        $categoria = new Categoria_model();
+        $data['title'] = 'Paginacion_ci';
+        $pages = 5; //Número de registros mostrados por páginas
+        $config['base_url'] = base_url() . 'admin/categoria'; // parametro base de la aplicación, si tenemos un .htaccess nos evitamos el index.php
+        $config['total_rows'] = $categoria->filas(); //calcula el número de filas  
+        $config['per_page'] = $pages; //Número de registros mostrados por páginas
+        $config['num_links'] = 5; //Número de links mostrados en la paginación
+        $config['first_link'] = 'Primera'; //primer link
+        $config['last_link'] = 'Última'; //último link
+        $config["uri_segment"] = 3; //el segmento de la paginación
+        $config['next_link'] = 'Siguiente'; //siguiente link
+        $config['prev_link'] = 'Anterior'; //anterior link
+        $this->pagination->initialize($config); //inicializamos la paginación		
+        $data["listas"] = $this->Categoria_model->total_paginados($config['per_page'], $this->uri->segment(3));
+        //cargamos la vista y el array data
+        $this->load->view('head');
+        $this->load->view('categoria', $data);
+    }
+
+    public function modificar_max_limite($id_alumno, $id_categoria, $limite) {
+        /*
+         * 1.- Modifica o crea una linea en la tabla de limite_por_categoria.
+         * 
+         * 2.- Con Ajax recoge el resultado.
+         */
+    }
+
+    public function modificar_limite_categoria($id_usuario, $id_categoria, $limite) {
+        /*
+         * 1.- Buscar en la tabla de limites si existe la relación 
+         * id_usuario y id_categoria, modificarla o crearla con el limite.
+         */
+    }
+
+    public function modificar_categoria($id_categoria) {
+        /*
+         * 1.- Modifica la categoria con los parametros pasados por post y ajax.
+         */
+        //modificar categoria
+        if ($this->db->_error_message()) {
+            $jsondata["success"] = False; // Or do whatever you gotta do here to raise an error
+            $jsondata["mensaje"] = sprintf('Error en la base de datos.');
+        } elseif ($this->db->affected_rows() > 0) {
+            $jsondata["success"] = True;
+            $jsondata["mensaje"] = sprintf("ok");
+        } else {
+            $jsondata["success"] = false;
+            $jsondata["mensaje"] = sprintf('No se modifico la categoria.');
+        }
+
+        echo json_encode($jsondata, JSON_FORCE_OBJECT);
+    }
+
+    public function eliminar_categoria($id_categoria) {
         /*
          * 1.- Comprobar si hay tareas con esta categoria.
          * 
          * 2.- Si no hay tareas con esa categoria eliminar la categoria y todos 
          * los limites en la tabla limites categoria alumnos. 
          */
-        $this->load->model('Curso_model');
-        $curso = new Curso_model();
-        $delete = $curso->delete_curso($id_curso);
-        if ($delete) {
-            echo 'True';
+        if ($this->db->_error_message()) {
+            $jsondata["success"] = False; // Or do whatever you gotta do here to raise an error
+            $jsondata["mensaje"] = sprintf('Error en la base de datos.');
+        } elseif ($this->db->affected_rows() > 0) {
+            $jsondata["success"] = True;
+            $jsondata["mensaje"] = sprintf("La categoria se elimino correctamente.");
         } else {
-            echo 'No se pueden eliminar curso que tengan alumnos. ☻-☺¬.';
+            $jsondata["success"] = false;
+            $jsondata["mensaje"] = sprintf('No se pudo eliminar la categoria. Esta siendo usada por una tarea.');
         }
-        $this->configuracion();
+        echo json_encode($jsondata, JSON_FORCE_OBJECT);
     }
+
+    public function añadir_alumnos() {
+        //...
+    }
+
+    public function curso() {
+        $this->load->model('Curso_model');
+        $data['title'] = 'Paginacion_ci';
+        $pages = 5; //Número de registros mostrados por páginas
+        $config['base_url'] = base_url() . 'admin/curso'; // parametro base de la aplicación, si tenemos un .htaccess nos evitamos el index.php
+        $config['total_rows'] = $this->Curso_model->filas(); //calcula el número de filas  
+        $config['per_page'] = $pages; //Número de registros mostrados por páginas
+        $config['num_links'] = 20; //Número de links mostrados en la paginación
+        $config['first_link'] = 'Primera'; //primer link
+        $config['last_link'] = 'Última'; //último link
+        $config["uri_segment"] = 3; //el segmento de la paginación
+        $config['next_link'] = 'Siguiente'; //siguiente link
+        $config['prev_link'] = 'Anterior'; //anterior link
+        $this->pagination->initialize($config); //inicializamos la paginación		
+        $data["listas"] = $this->Curso_model->total_paginados($config['per_page'], $this->uri->segment(3));
+        //cargamos la vista y el array data
+        $this->load->view('head');
+        $this->load->view('curso', $data);
+    }
+
+    /* public function configuracion() {
+
+
+
+      $this->load->view('admin/configuracion', $data);
+      } */
 
     public function nuevo_curso() {
         /*
@@ -112,74 +217,10 @@ class Admin extends Profesor {
         if ($nombre != FALSE) {
             $exito = $curso->insertar_curso($nombre);
 
-            $this->configuracion();
+            redirect('admin/curso');
         } else {
-            $this->configuracion();
+            redirect('admin/curso');
         }
-    }
-
-    /*
-     * Muestra la vista de configuracion del sistema.
-     */
-
-    public function configuracion() {
-        $this->load->model('Curso_model');
-        $curso = new Curso_model();
-
-        $this->load->model('Categoria_model');
-        $categoria = new Categoria_model();
-
-        $data['categorias'] = $categoria->categorias();
-        $data['cursos'] = $curso->cursos();
-        /* Ahora data tiene toda la informacion de las tablas de curso y categoria.
-         * para que el administrador pueda verlas en su vista y eliminarlas.
-         */
-        $this->load->view('admin/vista_configuracion', $data);
-    }
-
-    public function nuevo_alumno() {
-        /*
-         * 1.- Comprobar si hay una categoria con el mismo nombre.
-         * Si no hay coincidencia, añadirla.
-         */
-        $nombre = $this->input->post('nombre');
-        $apellido1 = $this->input->post('apellido1');
-        $apellido2 = $this->input->post('apellido2');
-        $id_curso = $this->input->post('id_curso');
-        $id_curso = (int) $id_curso;
-        if ($nombre != FALSE && $apellido1 != FALSE && $apellido2 != FALSE && $id_curso != FALSE) {
-            $this->load->model('Alumno_model');
-            $alumno = new Alumno_model();
-            $exito = $alumno->insertar_Alumno($nombre, $apellido1, $apellido2, $id_curso);
-            $this->configuracion();
-        } else {
-            $this->configuracion();
-            echo 'Error en el form de nuevo_alumno.';
-        }
-    }
-
-    public function nuevo_profesor() {
-        /*
-         * 1.- Inserta un nuevo profesor.
-         */
-        $nombre = $this->input->post('nombre');
-        $apellido1 = $this->input->post('apellido1');
-        $apellido2 = $this->input->post('apellido2');
-        $administrador = $this->input->post('administrador');
-        if ($nombre != FALSE && $apellido1 != FALSE && $apellido2 != FALSE) {
-            $this->load->model('Profesor_model');
-            $profesor = new Profesor_model();
-            $administrador = (int) $administrador;
-            $exito = $profesor->insertar_profesor($nombre, $apellido1, $apellido2, $administrador);
-            $this->configuracion();
-        } else {
-            $this->configuracion();
-            echo 'Error en el form de nuevo_profe.';
-        }
-    }
-
-    public function añadir_alumnos_con_fichero() {
-//...
     }
 
 }

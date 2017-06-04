@@ -1,15 +1,18 @@
-<form enctype="multipart/form-data" action="http://localhost/Racons/index.php/admin/nueva_categoria" method='POST'>
+<form enctype="multipart/form-data" action="" method='POST'>
     <text>Nombre</text>
-    <input type='text' id='nombre' name="nombre"></input>
+    <input type='text'id='nombre'></input>
     <text>Limite</text>
-    <input type='number' id='nombre' value="5" name="limite"></input>
-    <input type="submit" value="Guardar"/>
+    <input type='text'id='limite'></input>
+    <button type="disabled" onclick="insertar_categoria();">Añadir</button>
 </form>
-<!--<script>
-    function nuevo_curso() {
-        var url = "http://localhost/Racons/admin/nuevo_curso";
+<script>
+    function insertar_categoria() {
+        var url = "http://localhost/Racons/admin/nueva_categoria";
         var obj = new Object();
-        obj.curso = document.getElementById("curso");
+        obj.id = document.getElementById(id_categoria);
+        obj.nombre = document.getElementById("nombre");
+        obj.limite = document.getElementById("limite");
+        obj.descripcion = document.getElementById("descripcion");
         var jsonString = JSON.stringify(obj);
         $.ajax({
             dataType: 'json',
@@ -27,4 +30,4 @@
             }
         });
     }
-</script>-->
+</script>

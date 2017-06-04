@@ -1,38 +1,12 @@
 <?php
 
 class Usuario_model extends CI_Model {
+
     public function login($password, $login) {
-        $this->db->select('id_persona, login, nombre, apellido1, apellido2');
+        $this->db->select('*');
         $this->db->where('nick', $login);
         $this->db->where('password', $password);
-        $q = $this->db->get('personas');
-        if ($q->num_rows() > 0) {
-            $profesor = $this->get_profesor($id_persona);
-            if ($profesor['encontrado'] == TRUE) {
-                if ($profesor['datos']['admin'] == TRUE) {
-                    return ['admin' => $profesor['datos'], 'encontrado' => TRUE]; //caso 1 soy admin
-                } else {
-                    return ['profesor' => $profesor['datos'], 'encontrado' => TRUE];
-                }
-            } else {
-                $alumno = $this->get_alumno($id_persona);
-                if ($alumno['encontrado'] == TRUE) {
-                    return ['alumno' => $alumno['datos'], 'encontrado' => TRUE];
-                } else {
-                    return ['encontrado' => TRUE];
-                }
-            }
-
-            return ['usuario' => $q->result_array(), 'encontrado' => TRUE];
-        } else {
-            return ['encontrado' => FALSE];
-        }
-    }
-
-    public function existe_nick($nick) {
-        $this->db->select('nick');
-        $this->db->where('nick', $nick);
-        $q = $this->db->get('personas');
+        $q = $this->db->get('persona');
         if ($q->num_rows() > 0) {
             return true;
         } else {
@@ -40,44 +14,64 @@ class Usuario_model extends CI_Model {
         }
     }
 
-    public function get_profesor($id_persona) {
-        $this->db->select('admin');
-        $this->db->where('id_profesor', $id_persona);
-        $q = $this->db->get('profesor');
+    public function dame_datos_usuario($password, $nick) {
+        $this->db->select('*');
+        $this->db->where('nick', $nick);
+        $this->db->where('password', $password);
+        $q = $this->db->get('persona');
         if ($q->num_rows() > 0) {
-            return ['datos' => $q->result_array(), 'encontrado' => TRUE];
+            $aux = $q->result_array();
+            $data = $aux[0];
+            $data['login_ok'] = TRUE;
+            $q = $this->db->query('select * from alumno where id_alumno = ' . $data['id_persona']);
+            if ($q->num_rows() == 0) {
+                $q = $this->db->query('select * from profesor where id_profesor = ' . $data['id_persona']);
+                $aux = $q->result_array();
+                $profesor = $aux[0];
+                $data['admin'] = $profesor['administrador'];
+                $data['id_profesor'] = $profesor['id_profesor'];
+                if ($data['admin'] == TRUE) {
+                    $data['rol'] = 'admin';
+                } else {
+                    $data['rol'] = 'profesor';
+                }
+            } else {
+                $aux2 = $q->result_array();
+                $profesor = $aux2[0];
+                $data['rol'] = 'alumno';
+                $data['id_curso'] = $profesor['id_curso'];
+                $data['id_alumno'] = $profesor['id_alumno'];
+            }
+            return $data;
         } else {
-            return ['encontrado' => FALSE];
+            return false;
         }
     }
 
-    public function get_alumno($id_persona) {
-        $this->db->select('id_alumnos, login, id_curso');
-        $this->db->where('id_profesor', $id_persona);
-        $q = $this->db->get('alumno');
-        if ($q->num_rows() > 0) {
-            return ['datos' => $q->result_array(), 'encontrado' => TRUE];
+    public function get_data_user() {
+        $this->db->select('*');
+        $this->db->where('nick', $login);
+        $this->db->where('password', $password);
+        $result = $this->db->get('persona');
+        return $result->result_array();
+    }
+
+    public function Tipo_cuenta($nick) {
+        $query = $this->db->query("SELECT * FROM alumno WHERE id_alumno=(SELECT id_persona FROM persona WHERE nick='$nick');");
+        if ($query->num_rows() > 0) {
+            return true;
         } else {
-            return ['encontrado' => FALSE];
+            return false;
         }
     }
 
-    public function Logout() {
-        $this->session->sess_destroy();
+    public function getAdministrador($nick) {
+        $query = $this->db->query("SELECT * FROM profesor WHERE id_profesor=(SELECT id_persona FROM persona WHERE nick='$nick');");
+        $row = $query->row();
+
+        if (isset($row)) {
+            return $row->administrador;
+        }
     }
 
-    public function update_entry() {
-        
-    }
-
-//            $this->title    = $_POST['title'];
-//            $this->content  = $_POST['content'];
-//            $this->date     = time();
-//
-//            $this->db->update('entries', $this, array('id' => $_POST['id']));
-//                $this->title    = $_POST['title']; // please read the below note
-//                $this->content  = $_POST['content'];
-//                $this->date     = time();
-//
-//                $this->db->insert('entries', $this);
 }

@@ -2,6 +2,24 @@
 
 class Categoria_model extends CI_Model {
 
+    function filas(){
+	$consulta = $this->db->get('categoria');
+	return $consulta->num_rows() ;
+    }
+    
+    function total_paginados($por_pagina,$star){
+        if(!$star){
+        $consulta = $this->db->query('SELECT * FROM `categoria` LIMIT '.$por_pagina);
+        }else{
+            $consulta = $this->db->query('SELECT * FROM `categoria` LIMIT '.$por_pagina. ' OFFSET '.$star);
+        }
+        if($consulta->num_rows()>0){
+            foreach($consulta->result() as $fila){
+                $data[] = $fila;
+            }
+            return $data;
+        }
+    }
     //terminado sin comprobar
     public function categorias() {
         $q = $this->db->get('categoria');

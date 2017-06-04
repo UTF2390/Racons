@@ -2,6 +2,135 @@
 
 class Taller_model extends CI_Model {
 
+    function filas() {
+        $consulta = $this->db->get('taller');
+        return $consulta->num_rows();
+    }
+
+    function numero_filas_taller_alumno() {
+        $consulta = $this->db->query('SELECT count(*) as count '
+                . 'FROM taller as t, curso_taller as c'
+                . ' where t.id_taller = c.id_taller '
+                . ' and c.id_curso = ' . $this->session->userdata('id_curso')
+                . ' and t.activo = 1'
+                . ' ORDER BY t.nombre;');
+        $data = $consulta->result_array();
+        return $data[0]['count'];
+    }
+
+    function numero_filas_taller_profesor() {
+        $consulta = $this->db->query('SELECT count(*) as count '
+                . 'FROM taller as t'
+                . ' where'
+                . ' t.id_profesor = ' . $this->session->userdata('id_profesor'));
+        $data = $consulta->result_array();
+        return $data[0]['count'];
+    }
+    function numero_filas_taller_historial_alumno($id_alumno) {
+        $consulta = $this->db->query('SELECT count(*) as count '
+                . 'FROM alumno_taller as al'
+                . ' where al.id_alumno = ' . $id_alumno);
+        $data = $consulta->result_array();
+        return $data[0]['count'];
+    }
+
+    function total_paginados_profesor($por_pagina, $star) {
+        if (!$star) {
+            $consulta = $this->db->query('SELECT distinct * ,(select count(*) '
+                    . ' from alumno_taller as al '
+                    . ' where al.id_taller = t.id_taller '
+                    . ' and al.fecha > curdate()) as participantes'
+                    . ' FROM taller as t '
+                    . ' where t.id_profesor = ' . $this->session->userdata('id_profesor')
+                    . ' ORDER BY t.nombre'
+                    . ' LIMIT ' . $por_pagina);
+        } else {
+            $consulta = $this->db->query('SELECT distinct * ,(select count(*) '
+                    . ' from alumno_taller as al '
+                    . ' where al.id_taller = t.id_taller '
+                    . ' and al.fecha > curdate()) as participantes'
+                    . ' FROM taller as t'
+                    . ' where t.id_profesor = ' . $this->session->userdata('id_profesor')
+                    . ' ORDER BY t.nombre'
+                    . ' LIMIT ' . $por_pagina . ' OFFSET ' . $star);
+        }
+        if ($consulta->num_rows() > 0) {
+            $data = $consulta->result_array();
+            return $data;
+        } else {
+            return [[]];
+        }
+    }
+
+    function total_paginados_historial($por_pagina, $star, $id_alumno) {
+        if (!$star) {
+            $consulta = $this->db->query('SELECT distinct * ,c.nombre as nombre_categoria, t.nombre as nombre_taller '
+                    . ' FROM taller as t, alumno_taller as al, categoria as c'
+                    . ' where t.id_categoria = c.id_categoria'
+                    . ' and t.id_taller = al.id_taller'
+                    . ' and id_alumno =  ' . $id_alumno
+                    . ' ORDER BY al.fecha desc'
+                    . ' LIMIT ' . $por_pagina);
+        } else {
+            $consulta = $this->db->query('SELECT distinct * ,c.nombre as nombre_categoria, t.nombre as nombre_taller '
+                    . ' FROM taller as t, alumno_taller as al, categoria as c'
+                    . ' where t.id_categoria = c.id_categoria'
+                    . ' and t.id_taller = al.id_taller'
+                    . ' and id_alumno =  ' . $id_alumno
+                    . ' ORDER BY al.fecha desc '
+                    . ' LIMIT ' . $por_pagina . ' OFFSET ' . $star);
+        }
+        if ($consulta->num_rows() > 0) {
+            $data = $consulta->result_array();
+            return $data;
+        } else {
+            return [];
+        }
+    }
+    
+    function total_paginados_alumno($por_pagina, $star) {
+        if (!$star) {
+            $consulta = $this->db->query('SELECT distinct *, (select count(*) from alumno_taller as at
+                                where t.id_taller = at.id_taller
+                                and at.fecha > curdate() 
+                                and at.id_alumno = ' . $this->session->userdata('id_alumno')
+                    . ') as apuntado ,(select count(*) from alumno_taller as at
+                                where t.id_taller = at.id_taller
+                                and at.fecha > curdate()) as participantes '
+                    . ' FROM taller as t, curso_taller as c'
+                    . ' where t.id_taller = c.id_taller '
+                    . ' and c.id_curso = ' . $this->session->userdata('id_curso')
+                    . ' and t.activo = 1'
+                    . ' ORDER BY t.nombre'
+                    . ' LIMIT ' . $por_pagina);
+        } else {
+            $consulta = $this->db->query('SELECT distinct *, (select count(*) from alumno_taller as at
+                                where t.id_taller = at.id_taller
+                                and at.fecha > curdate()
+                                and at.id_alumno = ' . $this->session->userdata('id_alumno')
+                    . ' ) as apuntado, (select count(*) from alumno_taller as at
+                                where t.id_taller = at.id_taller
+                                and at.fecha > curdate()) as participantes '
+                    . ' FROM taller as t, curso_taller as c'
+                    . ' where t.id_taller = c.id_taller'
+                    . ' and c.id_curso = ' . $this->session->userdata('id_curso')
+                    . ' and t.activo = 1'
+                    . ' ORDER BY apuntado desc, t.nombre'
+                    . ' LIMIT ' . $por_pagina . ' OFFSET ' . $star);
+        }
+        if ($consulta->num_rows() > 0) {
+            foreach ($consulta->result_array() as $fila) {
+                $data[] = $fila;
+            }
+            return $data;
+        }
+    }
+
+    public function getNumTaller() {
+        $q = $this->db->get('taller');
+        return $q->num_rows();
+    }
+
     public function taller_profesor($id_profesor) {
         $q = $this->db->query('SELECT c.nombre as nombre_categoria, id_taller, t.nombre, aforamiento, dia, hora_inicio, hora_fin, activo, id_profesor, c.id_categoria as c_id_categoria, participantes, descripcion, t.id_categoria 
            FROM categoria c, taller t
@@ -11,7 +140,7 @@ class Taller_model extends CI_Model {
         return $q->result_array();
     }
 
-    public function modificar_taller($id_profesor, $nombre, $id_categoria, $descripcion, $id_cursos, $dia, $hora_inicio_hh, $hora_inicio_mm, $hora_fin_hh, $hora_fin_mm, $aforamiento, $id_taller) {
+    public function modificar_taller($id_profesor, $nombre, $id_categoria, $descripcion, $id_cursos, $dia, $hora_inicio_hh, $hora_inicio_mm, $hora_fin_hh, $hora_fin_mm, $aforamiento) {
         $data = array(
             'id_profesor' => $id_profesor,
             'nombre' => $nombre,
@@ -67,24 +196,13 @@ class Taller_model extends CI_Model {
         return $result;
     }
 
-    public function habilitar_taller($id_taller, $dia, $hora_inicio, $hora_fin) {
-        $id_profesor = $this->session->userdata('id_profesor');
-        $this->db->query('
-            UPDATE taller as t 
-            SET activo = (SELECT IF (0 = (SELECT COUNT(*) FROM (SELECT * FROM taller) as o,
-    (SELECT * FROM taller where id_taller = ' . $id_taller . ') as b
-WHERE o.id_profesor = ' . $id_profesor . ' and o.id_taller != ' . $id_taller . ' and o.dia = b.dia  and o.activo = 1 and
-                    (( o.hora_inicio > b.hora_fin and o.hora_inicio < b.hora_inicio) or 
-                    (o.hora_fin < b.hora_inicio and o.hora_fin > b.hora_fin) or
-                    (b.hora_inicio < o.ap_hora_inicio and b.hora_fin > o.ap_hora_fin)))
-                        ,true
-                        ,false))
-                WHERE t.id_taller = ' . $id_taller);
-
-        if ($this->db->affected_rows() > 0) {
+    public function habilitar_taller($id_taller, $id_profesor) {
+        $q = $this->db->query('select habilitar_taller(' . $id_taller . ',' . $id_profesor . ') as habilitado');
+        $data = $q->result_array();
+        if ($data[0]['habilitado'] > 0) {
             $response = "ok";
         } else {
-            $response = "404";
+            $response = "Este taller se solapa con otro activo.";
         }
         return $response;
     }
@@ -98,6 +216,9 @@ WHERE o.id_profesor = ' . $id_profesor . ' and o.id_taller != ' . $id_taller . '
         $this->db->update('taller', $data);
 
         if ($this->db->affected_rows() > 0) {
+            $this->db->query('delete from alumno_taller where id_taller = ' . $id_taller
+                    . ' and fecha >curdate();');
+
             $response = "ok";
         } else {
             $response = "404";
@@ -140,14 +261,51 @@ WHERE o.id_profesor = ' . $id_profesor . ' and o.id_taller != ' . $id_taller . '
             'descripcion' => $descripcion,
             'dia' => $dia,
             'hora_inicio' => "00:" + $hora_inicio_hh + ":" + $hora_inicio_mm,
-            'hora_inicio' => "00:" + $hora_fin_hh + ":" + $hora_fin_mm,
+            'hora_fin' => "00:" + $hora_fin_hh + ":" + $hora_fin_mm,
             'aforamiento' => $aforamiento
         );
         $this->db->insert('taller', $data);
-        $id_taller = $this->db->insert_id();
-
-        $this->insertar_curso_taller($id_cursos, $id_taller);
         return $this->db->affected_rows() > 0;
+    }
+
+    public function taller_alumno_horario($id_alumno) {
+        for ($i = 1; $i < 6; $i++) {
+            $q = $this->db->query('select * from taller as t, alumno_taller as al 
+         where al.fecha>curdate() and al.id_taller = t.id_taller 
+         and al.id_alumno = ' . $id_alumno . ' 
+         and  t.dia = ' . $i . ' 
+         order by t.hora_inicio, t.nombre');
+            $horario[$i] = $q->result_array();
+        }
+        return $horario;
+    }
+
+    public function taller_alumno($id_alumno) {
+
+        $this->db->query('set @id_alumno = ' . $id_alumno . ';');
+        $this->db->query('set @id_curso = (select id_curso from alumno where id_alumno = @id_alumno);');
+
+        $q = $this->db->query('SELECT *, (select count(*) from alumno_taller as at
+                                where t.id_taller = at.id_taller
+                                and at.fecha > curdate() ) as apuntado
+                                FROM taller as t, curso_taller as c
+                                WHERE activo = 1
+                                    and c.id_taller = t.id_taller
+                                    and c.id_curso = @id_curso
+                                ORDER BY t.hora_inicio, t . nombre;');
+        $talleres = $q->result_array();
+        return $talleres;
+    }
+
+    public function apuntar($id_taller, $id_alumno) {
+        $q = $this->db->query('SELECT apuntar(' . $id_taller . ', ' . $id_alumno . ' ) as respuesta');
+        $result = $q->result_array();
+        return $result;
+    }
+
+    public function desapuntar($id_taller, $id_alumno) {
+        $q = $this->db->query('DELETE FROM `racons`.`alumno_taller` WHERE `id_taller` = ' . $id_taller . ' and `id_alumno` = ' . $id_alumno . ' and `fecha` > curdate();');
+        return TRUE;
     }
 
 }

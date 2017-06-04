@@ -2,9 +2,31 @@
 
 class Alumno_model extends CI_Model {
 
-    public function get_alumnos() {
-        $query = $this->db->get('alumno');
-        return $query->result();
+    function filas() {
+        $consulta = $this->db->get('alumno');
+        return $consulta->num_rows();
+    }
+
+    function total_paginados($por_pagina, $star) {
+        if (!$star) {
+            $consulta = $this->db->query('SELECT * '
+                    . ' FROM persona as p, alumno as a, curso as c'
+                    . ' WHERE c.id_curso=a.id_curso '
+                    . ' and p.id_persona=a.id_alumno '
+                    . ' LIMIT ' . $por_pagina);
+        } else {
+            $consulta = $this->db->query('SELECT * '
+                    . ' FROM persona as p, alumno as a, curso as c'
+                    . ' WHERE c.id_curso=a.id_curso '
+                    . ' and p.id_persona=a.id_alumno '
+                    . ' LIMIT ' . $por_pagina . ' OFFSET ' . $star);
+        }
+        if ($consulta->num_rows() > 0) {
+            foreach ($consulta->result() as $fila) {
+                $data[] = $fila;
+            }
+            return $data;
+        }
     }
 
     function insertar_Alumno($nombre, $apellido1, $apellido2, $id_curso) {
@@ -18,7 +40,6 @@ class Alumno_model extends CI_Model {
 
         $this->db->where('id_persona', $id_persona);
         $this->db->update('persona', ['nick' => $id_persona]);
-
         $alumno = ['id_curso' => $id_curso, 'id_alumno' => $id_persona];
         $this->db->insert('alumno', $alumno);
 
@@ -50,6 +71,25 @@ class Alumno_model extends CI_Model {
         $q = $this->db->get('personas');
         if ($q->num_rows() > 0) {
             return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getId_curso($nick) {
+        $this->db->select('id_persona');
+        $this->db->from('persona');
+        $this->db->where('nick', $nick);
+        $persona = $this->db->get();
+        $persona = $persona->result_array();
+
+        $this->db->select('id_curso');
+        $this->db->from('alumno');
+        $this->db->where('id_alumno', $persona[0]['id_persona']);
+        $id_curso = $this->db->get();
+
+        if ($id_curso->num_rows() > 0) {
+            return $id_curso->result_array();
         } else {
             return false;
         }

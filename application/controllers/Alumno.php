@@ -8,79 +8,69 @@ class Alumno extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        //Cargar el modelo
-//        $this->load->model('Alumno_model');
-    }
-
-    public function index() {
-        $this->load->view('alumno/vista_alumno');
-    }
-
-    /*
-     * El usuario se apunta de la taller con $id_tarea.
-     */
-
-    public function modificar_password_nick() {
-        $password1 = $this->input->post('password1');
-        $password2 = $this->input->post('password2');
-        $nick = $this->input->post('nick');
-
-        if ($password1 == $password2) {
-            if (strlen($password1) < 5) {
-                echo 'Contraseña demasiado corta';
-            } else {
-                $id_alumno = $this->session->userdata('id_alumno');
-                $this->load->model('Persona_model');
-                $persona = new Persona_model();
-                $persona->modificar($password1, $nick);
-            }
-        } else {
-            echo 'Las contraseñas no coinciden.';
+        If ($this->session->userdata['rol'] != 'alumno') {
+            session_destroy();
+            redirect('/home');
         }
     }
 
+    public function index() {
+        $this->load->model('Taller_model');
+        $this->load->model('Horario_model');
+        $taller = new Taller_model();
+        $horario = new Horario_model();
+        $id_alumno = $taller->session->userdata('id_alumno');
+        $id_curso = $taller->session->userdata('id_curso');
+        $data['horario'] = $taller->taller_alumno_horario($id_alumno, $id_curso);
+        $data['dias_semana'] = $horario->dias_semana();
+        $this->load->view('head');
+        $this->load->view('horario', $data);
+    }
+
+    public function lista_taller() {
+        $this->load->model('Taller_model');
+        $taller = new Taller_model();
+        $data['title'] = 'Paginacion_ci';
+        $config['base_url'] = base_url() . 'alumno/lista_taller'; // parametro base de la aplicación, si tenemos un .htaccess nos evitamos el index.php
+//	$config['total_rows'] = $taller->filas_taller_alumno();//calcula el número de filas  
+        $config['total_rows'] = $taller->numero_filas_taller_alumno();;
+        $config['per_page'] = 7; //Número de registros mostrados por páginas
+        $config['num_links'] = 10; //Número de links mostrados en la paginación
+        $config['first_link'] = 'Primera'; //primer link
+        $config['last_link'] = 'Última'; //último link
+        $config['uri_segment'] = 3; //el segmento de la paginación
+        $config['next_link'] = 'Siguiente'; //siguiente link
+        $config['prev_link'] = 'Anterior'; //anterior link
+        $this->pagination->initialize($config); //inicializamos la paginación		
+        $data["talleres"] = $taller->total_paginados_alumno($config['per_page'], $this->uri->segment(3));
+        $data['paginacion'] = $this->pagination->create_links();
+        $this->load->view('head');
+        $this->load->view('taller_alumno', $data);
+    }
+
     public function apuntarse($id_taller) {
-        /* 1.-Comprobar si la taller pertenece a la misma presentación 
-          que el alumno.
-
-          2.- Si la opción libre_de_limites esta en FALSE, comprobar si el alumno
-          ha superado el limite por categoria permitidos en los ultimos 30 dias.
-
-          3.-Insertar en el historial si hay plazas libres. En la consulta
-          select tiene que haber un if comprobando si hay plazas luego
-          incrementar contador y despues insertar. De este modo se evitan errores.
-          Tambien se puede hacer con un triger en la base de datos.
-
-          5.-Ir a la vista presentaciones.
-         * 
-         */
-        $id_alumno = $this->session->userdata('id_alumno');
-        $q = $this->db->query("select apuntar(" . $id_taller . "," . $id_alumno . ")");
-        var_dump($q->result_array());
-//        $this->db->call_function('apuntar', $id_taller, $id_alumno);
+        $this->load->model('Taller_model');
+        $taller = new Taller_model();
+        $id_alumno = $taller->session->userdata('id_alumno');
+//        var_dump($id_alumno);
+        $q = $taller->apuntar($id_taller, $id_alumno);
+        $data = $q[0]['respuesta'];
+        echo $data;
+        return $data;
+//        redirect('alumno/lista_taller');
     }
 
-    /*
-     * El usuario se desapunta de la taller con $id_tarea.
-     */
-
-    public function desapuntarse($id_tarea) {
-        /*
-         * 1.-Comprobar si el alumno esta apuntado a la taller borrarla. 
-         * 
-         * 2.-Volver a vista_horario.
-         */
-    }
-
-
-    public function horario() {
-        /*
-         * 1.-Conseguir tareas que pertenezcan a la presentacion (curso)
-         * del alumno.
-         * 
-         * 2.-Mostrar vista_tareas. Le pasamos por parametro el array
-         * y mostra la vista /alumno/vista_presentaciones.
-         */
+    public function desapuntarse($id_taller) {
+        $this->load->model('Taller_model');
+        $taller = new Taller_model();
+        $id_alumno = $taller->session->userdata('id_alumno');
+        $respuesta = $taller->desapuntar($id_taller, $id_alumno);
+//        redirect('alumno/lista_taller');
+        if($respuesta == true){
+            echo 'ok';
+        }else{
+            echo 'No estabas apuntado a esta asignatura (-.-) Hacker!!';
+        }
     }
 
 }
