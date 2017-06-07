@@ -33,21 +33,18 @@ class Admin extends Profesor {
     }
 
     public function nuevo_alumno() {
-        /*
-         * 1.- Comprobar si hay una categoria con el mismo nombre.
-         * Si no hay coincidencia, añadirla.
-         */
 
+        $nick = $this->input->post('nick');
+        $password = $this->input->post('password');
         $nombre = $this->input->post('nombre');
         $apellido1 = $this->input->post('apellido1');
         $apellido2 = $this->input->post('apellido2');
-        $id_curso = $this->input->post('curso');
-        $id_curso = (int) $id_curso;
+        $id_curso = $this->input->post('id_curso');
         var_dump($_POST);
-        if ($nombre != FALSE && $apellido1 != FALSE && $apellido2 != FALSE && $id_curso != FALSE) {
+        if ($nombre != FALSE && $apellido1 != FALSE && $apellido2 != FALSE) {
             $this->load->model('Alumno_model');
             $alumno = new Alumno_model();
-            $exito = $alumno->insertar_Alumno($nombre, $apellido1, $apellido2, $id_curso);
+            $exito = $alumno->insertar_Alumno($nick, $password, $nombre, $apellido1, $apellido2, $id_curso);
             redirect('admin/alumno');
         } else {
             //$this->configuracion();
@@ -60,11 +57,10 @@ class Admin extends Profesor {
          * 1.- Inserta un nuevo profesor.
          */
         $nick = $this->input->post('nick');
+        $password1 = $this->input->post('password');
         $nombre = $this->input->post('nombre');
         $apellido1 = $this->input->post('apellido1');
         $apellido2 = $this->input->post('apellido2');
-        $password1 = $this->input->post('password1');
-        $password2 = $this->input->post('password2');
         $administrador = $this->input->post('administrador');
 
         if ($nombre != FALSE && $apellido1 != FALSE && $apellido2 != FALSE) {
@@ -93,7 +89,7 @@ class Admin extends Profesor {
             $exito = $categoria->insertar_categoria($nombre, $limite);
             redirect('admin/categoria');
         } else {
-            echo 'hola';
+            redirect('admin/categoria');
         }
     }
 
@@ -132,44 +128,111 @@ class Admin extends Profesor {
          * id_usuario y id_categoria, modificarla o crearla con el limite.
          */
     }
+    
+
+    
 
     public function modificar_categoria($id_categoria) {
-        /*
-         * 1.- Modifica la categoria con los parametros pasados por post y ajax.
-         */
-        //modificar categoria
-        if ($this->db->_error_message()) {
-            $jsondata["success"] = False; // Or do whatever you gotta do here to raise an error
-            $jsondata["mensaje"] = sprintf('Error en la base de datos.');
-        } elseif ($this->db->affected_rows() > 0) {
-            $jsondata["success"] = True;
-            $jsondata["mensaje"] = sprintf("ok");
-        } else {
-            $jsondata["success"] = false;
-            $jsondata["mensaje"] = sprintf('No se modifico la categoria.');
-        }
 
-        echo json_encode($jsondata, JSON_FORCE_OBJECT);
+        $nombre = $this->input->post('nombre');
+        $limite = $this->input->post('limite');
+
+        if ($nombre != FALSE && $limite != FALSE) {
+            $this->load->model('Categoria_model');
+            $categoria = new Categoria_model();
+            $response = $categoria->update_categoria($id_categoria, $limite, $nombre);
+            $response = $categoria->categoria_fila($id_categoria);
+        } else {
+            $response = "No se encontró la categoria.";
+        }
+        echo $response;
     }
 
-    public function eliminar_categoria($id_categoria) {
+    public function modificar_categoria_form($id_categoria) {
+        $this->load->model('Categoria_model');
+        $categoria = new Categoria_model();
+        $data['categoria'] = $categoria->categoria($id_categoria);
+        if (empty($data['categoria']) == false) {
+            $this->load->view('form_modificar_categoria', $data);
+        } else {
+            echo 'false';
+        }
+    }
+
+    public function modificar_curso_form($id_curso) {
+        $this->load->model('Curso_model');
+        $curso = new Curso_model();
+        $data['curso'] = $curso->curso($id_curso);
+        if (empty($data['curso']) == false) {
+            $this->load->view('form_modificar_curso', $data);
+        } else {
+            echo 'false';
+        }
+    }
+
+    public function modificar_alumno_form($id_alumno) {
+        $id_curso = $this->input->post('id_curso');
+        $this->load->model('Alumno_model');
+        $this->load->model('Curso_model');
+        $alumno = new Alumno_model();
+        $curso = new Curso_model();
+        $data['alumno'] = $alumno->alumno($id_alumno);
+        $data['cursos'] = $curso->cursos();
+        if (empty($data['alumno']) == false) {
+            $this->load->view('form_modificar_alumno', $data);
+        } else {
+            echo 'false';
+        }
+    }
+
+    public function modificar_alumno($id_alumno) {
+        $nick = $this->input->post('nick');
+        $password = $this->input->post('password');
+        $nombre = $this->input->post('nombre');
+        $apellido1 = $this->input->post('apellido1');
+        $apellido2 = $this->input->post('apellido2');
+        $id_curso = $this->input->post('id_curso');
+        $this->load->model('Alumno_model');
+        $alumno = new Alumno_model();
+        $result = $alumno->modificar_alumno($id_alumno, $nick, $password, $nombre, $apellido1, $apellido2, $id_curso);
+        if ($result != false) {
+            $result = $alumno->alumno_fila($id_alumno);
+            echo $result;
+        } else {
+            $result = 'false';
+        }
+    }
+
+    public function modificar_curso($id_curso) {
+        $curso_nombre = $this->input->post('curso');
+        $this->load->model('Curso_model');
+        $curso = new Curso_model();
+        $curso->modificar_curso($id_curso, $curso_nombre);
+        $result = $curso->curso_fila($id_curso, $curso_nombre);
+        if ($result != false) {
+            echo $result;
+        } else {
+            echo 'false';
+        }
+    }
+
+    public function eliminar_categoria() {
         /*
          * 1.- Comprobar si hay tareas con esta categoria.
          * 
          * 2.- Si no hay tareas con esa categoria eliminar la categoria y todos 
          * los limites en la tabla limites categoria alumnos. 
          */
-        if ($this->db->_error_message()) {
-            $jsondata["success"] = False; // Or do whatever you gotta do here to raise an error
-            $jsondata["mensaje"] = sprintf('Error en la base de datos.');
-        } elseif ($this->db->affected_rows() > 0) {
-            $jsondata["success"] = True;
-            $jsondata["mensaje"] = sprintf("La categoria se elimino correctamente.");
+        $id_categoria = $this->input->post('id_categoria');
+        if ($id_categoria != FALSE) {
+            $this->load->model('Categoria_model');
+            $categoria = new Categoria_model();
+
+            $response = $categoria->delete_categoria($id_categoria);
         } else {
-            $jsondata["success"] = false;
-            $jsondata["mensaje"] = sprintf('No se pudo eliminar la categoria. Esta siendo usada por una tarea.');
+            $response = "No se ha especificado un identificador.";
         }
-        echo json_encode($jsondata, JSON_FORCE_OBJECT);
+        echo $response;
     }
 
     public function añadir_alumnos() {
@@ -220,6 +283,36 @@ class Admin extends Profesor {
             redirect('admin/curso');
         } else {
             redirect('admin/curso');
+        }
+    }
+
+    public function eliminar_curso($id_curso) {
+        /*
+         * 1.- Comprobar si hay tareas con esta categoria.
+         * 
+         * 2.- Si no hay tareas con esa categoria eliminar la categoria y todos 
+         * los limites en la tabla limites categoria alumnos. 
+         */
+        $this->load->model('Curso_model');
+        $curso = new Curso_model();
+        $delete = $curso->delete_curso($id_curso);
+        if ($delete) {
+            echo 'ok';
+        } else {
+            echo 'No se pueden eliminar curso que tengan alumnos o esten activos en talleres. ☻-☺¬.';
+        }
+    }
+
+    public function eliminar_alumno($id_alumno) {
+
+        $this->load->model('Alumno_model');
+        $alumno = new Alumno_model();
+        $delete = $alumno->delete_alumno($id_alumno);
+        var_dump($delete);
+        if ($delete) {
+            echo 'ok';
+        } else {
+            echo 'No se pueden eliminar el alumno.';
         }
     }
 

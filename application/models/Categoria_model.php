@@ -2,28 +2,53 @@
 
 class Categoria_model extends CI_Model {
 
-    function filas(){
-	$consulta = $this->db->get('categoria');
-	return $consulta->num_rows() ;
+    function filas() {
+        $consulta = $this->db->get('categoria');
+        return $consulta->num_rows();
     }
-    
-    function total_paginados($por_pagina,$star){
-        if(!$star){
-        $consulta = $this->db->query('SELECT * FROM `categoria` LIMIT '.$por_pagina);
-        }else{
-            $consulta = $this->db->query('SELECT * FROM `categoria` LIMIT '.$por_pagina. ' OFFSET '.$star);
+
+    function total_paginados($por_pagina, $star) {
+        if (!$star) {
+            $consulta = $this->db->query('SELECT * FROM `categoria` LIMIT ' . $por_pagina);
+        } else {
+            $consulta = $this->db->query('SELECT * FROM `categoria` LIMIT ' . $por_pagina . ' OFFSET ' . $star);
         }
-        if($consulta->num_rows()>0){
-            foreach($consulta->result() as $fila){
+        if ($consulta->num_rows() > 0) {
+            foreach ($consulta->result() as $fila) {
                 $data[] = $fila;
             }
             return $data;
         }
     }
+
     //terminado sin comprobar
     public function categorias() {
         $q = $this->db->get('categoria');
         return $q->result_array();
+    }
+
+    public function categoria($id_categoria) {
+        $q = $this->db->query('select * '
+                . ' from categoria '
+                . ' where id_categoria = ' . $id_categoria);
+        $categoria = $q->result_array();
+        return $categoria[0];
+    }
+
+    public function categoria_fila($id_categoria) {
+        $categoria = $this->categoria($id_categoria);
+        if ($categoria != false) {
+            $result = '<tr id="id_categoria_' . $categoria['id_categoria'] . '">'
+                    . ' <td>' . $categoria['id_categoria'] . '</td>'
+                    . '<td>' . $categoria['nombre'] . '</td>'
+                    . '<td>' . $categoria['limite'] . '</td>'
+                    . '<td><a onclick="modificar_categoria_modal(' . $categoria['id_categoria'] . ')" class="btn btn-success btn-raised btn-xs"><i class="zmdi zmdi-refresh"></i></a></td>'
+                    . '<td><a onclick="eliminar_categoria(this,' . $categoria['id_categoria'] . ')" class="btn btn-danger btn-raised btn-xs"><i class="zmdi zmdi-delete"></i></a></td>'
+                    . '</tr>';
+        } else {
+            $result = false;
+        }
+        return $result;
     }
 
     public function update_categoria($id_categoria, $limite, $nombre) {

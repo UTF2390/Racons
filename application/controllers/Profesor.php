@@ -31,7 +31,9 @@ class Profesor extends CI_Controller {
 
     public function alumno() {
         $this->load->model('Alumno_model');
+        $this->load->model('Curso_model');
         $alumno = new Alumno_model();
+        $curso = new Curso_model();
         $data['title'] = 'Paginacion_ci';
         $pages = 7; //Número de registros mostrados por páginas
         $config['base_url'] = base_url() . 'profesor/alumno'; // parametro base de la aplicación, si tenemos un .htaccess nos evitamos el index.php
@@ -45,8 +47,7 @@ class Profesor extends CI_Controller {
         $config['prev_link'] = 'Anterior'; //anterior link
         $this->pagination->initialize($config); //inicializamos la paginación		
         $data["listas"] = $alumno->total_paginados($config['per_page'], $this->uri->segment(3));
-//        var_dump($config['total_rows']);
-        //cargamos la vista y el array data
+        $data["cursos"] = $curso->cursos();
         $this->load->view('head');
         $this->load->view('student', $data);
     }
@@ -144,6 +145,73 @@ class Profesor extends CI_Controller {
             }
         } else {
             redirect('profesor/taller');
+        }
+    }
+
+    public function modificar_taller($id_taller) {
+        /*
+         * 1.-Recoger los datos por post.
+         * 
+         * 3.-Comprobar si existe el taller.
+         *
+         * 4.-Comprobar si el profesor tiene otros talleres a la misma hora y dia.
+         * Insertar nuevo taller.
+         * 
+         * 5.-Ir a la vista mis talleres.
+         * 
+         */
+        $nombre = $this->input->post('nombre');
+        $id_categoria = $this->input->post('id_categoria');
+        $descripcion = $this->input->post('descripcion');
+        $dia = $this->input->post('dia');
+        $hora_inicio_hh = $this->input->post('hora_inicio_hh');
+        $hora_inicio_mm = $this->input->post('hora_inicio_mm');
+        $hora_fin_hh = $this->input->post('hora_fin_hh');
+        $hora_fin_mm = $this->input->post('hora_fin_mm');
+        //$activo = $this->input->post('activo');
+        $aforamiento = $this->input->post('aforamiento');
+        $i = 1;
+        $id_cursos = [];
+        while ($this->input->post('id_curso' . $i) != FALSE) {
+            $aux = $this->input->post('id_curso' . $i);
+            array_push($id_cursos, $aux);
+            $i++;
+        }
+        if ($nombre && $aforamiento != FALSE) {
+            $this->load->model('Taller_model');
+            $taller = new Taller_model();
+            $id_profesor = $this->session->userdata('id_profesor');
+            $exito = $taller->modificar_taller($id_profesor, $id_taller, $nombre, $id_categoria, $descripcion, $id_cursos, $dia, $hora_inicio_hh, $hora_inicio_mm, $hora_fin_hh, $hora_fin_mm, $aforamiento);
+
+            if ($exito) {
+                if ($id_cursos != [] && $id_taller != FALSE) {
+                    $taller->insertar_curso_taller($id_cursos, $id_taller);
+                }
+                $result = $taller->taller_fila($id_taller);
+            } else {
+                $result = 'No se ha podido modificar el taller!';
+            }
+        } else {
+            $result = 'No se ha podido modificar el taller!';
+        }
+        echo $result;
+    }
+
+    public function modificar_taller_form($id_taller) {
+        $this->load->model('Taller_model');
+        $this->load->model('Curso_model');
+        $this->load->model('Categoria_model');
+
+        $taller = new Taller_model();
+        $curso = new Curso_model();
+        $categoria = new Categoria_model();
+        $data['taller'] = $taller->taller($id_taller);
+        $data['cursos'] = $curso->cursos();
+        $data['categorias'] = $categoria->categorias();
+        if (empty($data['taller']) == false) {
+            $this->load->view('form_modificar_taller', $data);
+        } else {
+            echo 'false';
         }
     }
 

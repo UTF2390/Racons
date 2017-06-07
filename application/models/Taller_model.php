@@ -7,6 +7,48 @@ class Taller_model extends CI_Model {
         return $consulta->num_rows();
     }
 
+    function taller($id_taller) {
+        $q = $this->db->query('select * ,(select count(*) '
+                . ' from alumno_taller as al '
+                . ' where al.id_taller = t.id_taller '
+                . ' and al.fecha > curdate()) as participantes'
+                . ' from taller as t '
+                . ' where id_taller = ' . $id_taller);
+        $result = $q->result_array();
+        return $result[0];
+    }
+
+    public function taller_fila($id_taller) {
+        $taller = $this->taller($id_taller);
+        if ($taller != false) {
+            $result = '<tr id="' . $taller['id_taller'] . '">'
+                    . "<td class='id_taller'>" . $taller['id_taller'] . "</td>"
+                    . "<td>" . $taller['nombre'] . "</td>"
+                    . "<td>" . $taller['descripcion'] . "</td>"
+                    . "<td>" . $taller['aforamiento'] . "/" . $taller['participantes'] . "</td>"
+                    . "<td>" . $taller['dia'] . "</td>"
+                    . "<td>" . substr($taller['hora_inicio'], 3) . "</td>"
+                    . "<td>" . substr($taller['hora_fin'], 3) . "</td>"
+                    . "<td class='td_habilitar'>";
+
+            if ($taller['activo'] == "1") {
+//                                                                                                                $id_taller, $dia, $hora_inicio, $hora_fin
+                $result .= '<button class="boton_deshabilitar" onclick="deshabilitar(this)">Deshabilitar</button>';
+            } else {
+                $result .= '<button class="boton_habilitar" onclick="habilitar(this)">Habilitar</button>';
+            }
+            "</td>";
+            if ($this->session->userdata('rol') == "admin") {
+                $result .= '<td><a onclick="modificar_taller_modal(' . $taller['id_taller'] . ')" class="btn btn-success btn-raised btn-xs"><i class="zmdi zmdi-refresh"></i></a></td>';
+                $result .= '<td><a onclick="eliminar_taller_modal(this,' . $taller['id_taller'] . ')" class="btn btn-danger btn-raised btn-xs"><i class="zmdi zmdi-delete"></i></a></td>';
+            }
+            $result .= '</tr>';
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+
     function numero_filas_taller_alumno() {
         $consulta = $this->db->query('SELECT count(*) as count '
                 . 'FROM taller as t, curso_taller as c'
@@ -26,6 +68,7 @@ class Taller_model extends CI_Model {
         $data = $consulta->result_array();
         return $data[0]['count'];
     }
+
     function numero_filas_taller_historial_alumno($id_alumno) {
         $consulta = $this->db->query('SELECT count(*) as count '
                 . 'FROM alumno_taller as al'
@@ -87,7 +130,7 @@ class Taller_model extends CI_Model {
             return [];
         }
     }
-    
+
     function total_paginados_alumno($por_pagina, $star) {
         if (!$star) {
             $consulta = $this->db->query('SELECT distinct *, (select count(*) from alumno_taller as at
@@ -140,9 +183,8 @@ class Taller_model extends CI_Model {
         return $q->result_array();
     }
 
-    public function modificar_taller($id_profesor, $nombre, $id_categoria, $descripcion, $id_cursos, $dia, $hora_inicio_hh, $hora_inicio_mm, $hora_fin_hh, $hora_fin_mm, $aforamiento) {
+    public function modificar_taller($id_profesor, $id_taller, $nombre, $id_categoria, $descripcion, $id_cursos, $dia, $hora_inicio_hh, $hora_inicio_mm, $hora_fin_hh, $hora_fin_mm, $aforamiento) {
         $data = array(
-            'id_profesor' => $id_profesor,
             'nombre' => $nombre,
             'id_categoria' => $id_categoria,
             'descripcion' => $descripcion,
@@ -151,10 +193,6 @@ class Taller_model extends CI_Model {
             'hora_fin' => "00:" . $hora_fin_hh . ":" . $hora_fin_mm,
             'aforamiento' => $aforamiento
         );
-        var_dump($hora_inicio_hh);
-        var_dump($hora_inicio_mm);
-        var_dump($hora_fin_hh);
-        var_dump($hora_fin_mm);
         $this->db->where('id_taller', $id_taller);
         $this->db->update('taller', $data);
         $this->insertar_curso_taller($id_cursos, $id_taller);

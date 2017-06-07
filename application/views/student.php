@@ -1,5 +1,20 @@
 <body>
+    <div class="modal fade" id="respuesta_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Ups!</h4>
+                </div>
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- SideBar -->
+
     <section class="full-box cover dashboard-sideBar">
         <div class="full-box dashboard-sideBar-bg btn-menu-dashboard"></div>
         <div class="full-box dashboard-sideBar-ct">
@@ -74,7 +89,7 @@
                                             </div>
                                             <div class="form-group label-floating">
                                                 <label class="control-label">Nombre</label>
-                                                <textarea class="form-control" name="nombre"></textarea>
+                                                <input class="form-control" name="nombre"></input>
                                             </div>
                                             <div class="form-group label-floating">
                                                 <label class="control-label">Primer Apellido</label>
@@ -84,21 +99,16 @@
                                                 <label class="control-label">Segundo Apellido</label>
                                                 <input class="form-control" type="text" name="apellido2">
                                             </div>
+
                                             <div class="form-group">
-                                                <label class="control-label">Foto</label>
-                                                <div>
-                                                    <input type="text" readonly="" class="form-control" placeholder="Browse...">
-                                                    <input type="file" >
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label">Curso</label>
-                                                <select class="form-control" name="curso">
-                                                    <option>1</option>
-                                                    <option>2</option>
-                                                    <option>3</option>
-                                                    <option>4</option>
-                                                </select>
+                                                <label class="control-label" class="control-label">Curso</label>
+                                                <select name="id_curso">
+                                                    <?php
+                                                    foreach ($cursos as $curso) {
+                                                        echo' <option value = "' . $curso['id_curso'] . '">' . $curso['curso'] . '</option>';
+                                                    }
+                                                    ?>
+                                                </select> 
                                             </div>
                                             <br><br>
                                             <p class="text-center">
@@ -132,17 +142,17 @@
                                     <tbody>
                                         <?php
                                         foreach ($listas as $alumno):
-                                            echo '<tr>';
+                                            echo '<tr id="id_alumno_' . $alumno->id_alumno . '">';
                                             echo '<td class="id_curso" style="display: none;">' . $alumno->id_curso . '</td>';
                                             echo '<td class="id_persona" >' . $alumno->id_persona . '</td>';
-                                            echo'<td class="nombre" >' . $alumno->nombre . '</td>';
-                                            echo'<td class="apellido1" >' . $alumno->apellido1 . '</td>';
-                                            echo'<td class="apellido2" >' . $alumno->apellido2 . '</td>';
-                                            echo'<td class="curso" >' . $alumno->curso . '</td>';
-                                                echo'<td><a href="'. base_url().'profesor/historial_alumno/'.$alumno->id_alumno.'" class="btn glyphicon glyphicon-eye-open"></a></td>';
+                                            echo '<td class="nombre" >' . $alumno->nombre . '</td>';
+                                            echo '<td class="apellido1" >' . $alumno->apellido1 . '</td>';
+                                            echo '<td class="apellido2" >' . $alumno->apellido2 . '</td>';
+                                            echo '<td class="curso" >' . $alumno->curso . '</td>';
+                                            echo '<td><a href="' . base_url() . 'profesor/historial_alumno/' . $alumno->id_alumno . '" class="btn glyphicon glyphicon-eye-open"></a></td>';
                                             if ($this->session->userdata('rol') == "admin") {
-                                                echo'<td><a href="#!" class="btn btn-success btn-raised btn-xs"><i class="zmdi zmdi-refresh"></i></a></td>';
-                                                echo'<td><a href="#!" class="btn btn-danger btn-raised btn-xs"><i class="zmdi zmdi-delete"></i></a></td>';
+                                                echo'<td><a onclick="modificar_alumno_modal(' . $alumno->id_alumno . ')" href="#!" class="btn btn-success btn-raised btn-xs"><i class="zmdi zmdi-refresh"></i></a></td>';
+                                                echo'<td><a onclick="eliminar_alumno(this,' . $alumno->id_alumno . ')" href="#!" class="btn btn-danger btn-raised btn-xs"><i class="zmdi zmdi-delete"></i></a></td>';
                                             }
                                             echo '</tr>';
                                         endforeach
@@ -235,6 +245,73 @@
     </div>
     <script>
         $.material.init();
+        function modificar_alumno_modal(id_alumno) {
+            var url = "<?php echo base_url(); ?>admin/modificar_alumno_form/" + id_alumno;
+            $.ajax({
+                url: url
+            }).done(function (response) {
+                if (response != "false") {
+                    $('#respuesta_modal').find('.modal-body').html(response);
+                    $('#modal_form_boton_alumno').attr('onclick', 'modificar_alumno(' + id_alumno + ')');
+                    $('#respuesta_modal').modal("show");
+                } else {
+                    $('#respuesta_modal').find('.modal-body').html('No existe el alumno.');
+                    $('#respuesta_modal').modal("show");
+                }
+            }).fail(function (response) {
+                console.log("La solicitud a fallado: " + response);
+                alert("Error en la url.");
+
+            });
+        }
+
+        function modificar_alumno(id_alumno) {
+//            alert('modificar_alumno');
+            var url = "<?php echo base_url(); ?>admin/modificar_alumno/" + id_alumno;
+            var data = {'nick': $('#nick').val(),
+                'nombre': $('#nombre').val(),
+                'password': $('#password').val(),
+                'apellido1': $('#apellido1').val(),
+                'apellido2': $('#apellido2').val(),
+                'id_curso': $('#id_curso').val()};
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: data
+            }).done(function (response) {
+                if (response != "false") {
+//                    alert('#td_' + id_alumno);
+                    $('#id_alumno_' + id_alumno).replaceWith(response);
+                    $('#respuesta_modal').modal("hide");
+                } else {
+                    $('#respuesta_modal').find('.modal-body').html('No existe el alumno.');
+                    $('#respuesta_modal').modal("show");
+                }
+            }).fail(function (response) {
+                console.log("La solicitud a fallado: " + response);
+                alert("Error en la url.");
+
+            });
+        }
+
+        function eliminar_alumno(boton, id_alumno) {
+            var url = "<?php echo base_url(); ?>admin/eliminar_alumno/" + id_alumno;
+            $.ajax({
+                url: url
+            }).done(function (response) {
+                if (response == "ok") {
+                    $('#respuesta_modal').find('.modal-body').html('Se ha eliminado correctamente.');
+                    $('#respuesta_modal').modal("show");
+                    $(boton).closest('tr').html('');
+                } else {
+                    $('#respuesta_modal').find('.modal-body').html(response);
+                    $('#respuesta_modal').modal("show");
+                }
+            }).fail(function (response) {
+                console.log("La solicitud a fallado: " + response);
+                alert("Error en la url.");
+            });
+        }
     </script>
 </body>
 </html>

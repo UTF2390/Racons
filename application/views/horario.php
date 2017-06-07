@@ -214,25 +214,25 @@
                                                     [class*="distancia"]{
                                                         border-radius: 15px 50px;
                                                     }
-                                                    .distancia7{
+                                                    .distancia6{
                                                         background-color: #A9F5A9;
                                                     }
-                                                    .distancia6{
+                                                    .distancia5{
                                                         background-color: #81F781;
                                                     }
-                                                    .distancia5{
+                                                    .distancia4{
                                                         background-color: #58FA58;
                                                     }
-                                                    .distancia4{
+                                                    .distancia3{
                                                         background-color: #2EFE2E;
                                                     }
-                                                    .distancia3{
+                                                    .distancia2{
                                                         background-color: #00FF00;
                                                     }
-                                                    .distancia2{
+                                                    .distancia1{
                                                         background-color: #01DF01;
                                                     }
-                                                    .distancia1{
+                                                    .distancia0{
                                                         background-color: #04B404;
                                                     }
                                                     .hora_container{

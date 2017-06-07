@@ -85,7 +85,7 @@
                                             </div>
                                             <div class="form-group label-floating">
                                                 <label class="control-label">Aforamiento</label>
-                                                <textarea class="form-control" name="aforamiento"></textarea>
+                                                <input type="number" class="form-control" name="aforamiento"></input>
                                             </div>
                                             <div class="form-group">
                                                 <label class="control-label">Dia</label>
@@ -208,7 +208,7 @@
                                         <?php
                                         if (empty($talleres[0]) == false) {
                                             foreach ($talleres as $taller) {
-                                                echo'<tr>';
+                                                echo'<tr id="id_taller_' . $taller['id_taller'] . '">';
                                                 echo"<td class='id_taller'>" . $taller['id_taller'] . "</td>";
                                                 echo"<td>" . $taller['nombre'] . "</td>";
                                                 echo"<td>" . $taller['descripcion'] . "</td>";
@@ -226,8 +226,8 @@
                                                 }
                                                 "</td>";
                                                 if ($this->session->userdata('rol') == "admin") {
-                                                    echo'<td><a href="#!" class="btn btn-success btn-raised btn-xs"><i class="zmdi zmdi-refresh"></i></a></td>';
-                                                    echo'<td><a href="#!" class="btn btn-danger btn-raised btn-xs"><i class="zmdi zmdi-delete"></i></a></td>';
+                                                    echo'<td><a onclick="modificar_taller_modal(' . $taller['id_taller'] . ')" class="btn btn-success btn-raised btn-xs"><i class="zmdi zmdi-refresh"></i></a></td>';
+                                                    echo'<td><a onclick="eliminar_taller(this,' . $taller['id_taller'] . ')" class="btn btn-danger btn-raised btn-xs"><i class="zmdi zmdi-delete"></i></a></td>';
                                                 }
                                                 echo '</tr>';
                                             }
@@ -360,6 +360,68 @@
                     console.log('Habilitado correctamente.');
                 } else {
                     $('#respuesta_modal').find('.modal-body').html('No se habilitó el taller. ' + response);
+                    $('#respuesta_modal').modal("show");
+                }
+            }).fail(function (response) {
+                console.log("La solicitud a fallado: " + response);
+                alert("Error en la url.");
+            });
+        }
+
+//        -------
+
+        function modificar_taller_modal(id_taller) {
+            var url = "<?php echo base_url(); ?>profesor/modificar_taller_form/" + id_taller;
+            $.ajax({
+                url: url
+            }).done(function (response) {
+                if (response != "false") {
+                    $('#respuesta_modal').find('.modal-body').html(response);
+                    $('#modal_form_boton_taller').attr('onclick', 'modificar_taller(' + id_taller + ')');
+                    $('#respuesta_modal').modal("show");
+                } else {
+                    $('#respuesta_modal').find('.modal-body').html(response);
+                    $('#respuesta_modal').modal("show");
+                }
+            }).fail(function (response) {
+                console.log("La solicitud a fallado: " + response);
+                alert("Error en la url.");
+
+            });
+        }
+
+        function modificar_taller(id_taller) {
+            var url = "<?php echo base_url(); ?>profesor/modificar_taller/" + id_taller;
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: $('#form_modificar').serialize()
+            }).done(function (response) {
+                if (response != "false") {
+                    $('#id_taller_' + id_taller).replaceWith(response);
+                    $('#respuesta_modal').modal("hide");
+                } else {
+                    $('#respuesta_modal').find('.modal-body').html(response);
+                    $('#respuesta_modal').modal("show");
+                }
+            }).fail(function (response) {
+                console.log("La solicitud a fallado: " + response);
+                alert("Error en la url.");
+
+            });
+        }
+
+        function eliminar_taller(boton, id_taller) {
+            var url = "<?php echo base_url(); ?>profesor/eliminar_taller/" + id_taller;
+            $.ajax({
+                url: url
+            }).done(function (response) {
+                if (response == "ok") {
+                    $('#respuesta_modal').find('.modal-body').html('Se ha eliminado correctamente.');
+                    $('#respuesta_modal').modal("show");
+                    $(boton).closest('tr').html('');
+                } else {
+                    $('#respuesta_modal').find('.modal-body').html(response);
                     $('#respuesta_modal').modal("show");
                 }
             }).fail(function (response) {

@@ -13,7 +13,6 @@
             </div>
         </div>
     </div>
-
     <!-- SideBar -->
     <section class="full-box cover dashboard-sideBar">
         <div class="full-box dashboard-sideBar-bg btn-menu-dashboard"></div>
@@ -25,7 +24,7 @@
             <!-- SideBar User info -->
             <?php $this->load->view('sidebaruser'); ?>
             <!-- SideBar Menu -->
-            <?php $this->load->view('menu'); ?>
+            <?php $this->load->view('menu'); ?>			
         </div>
     </section>
 
@@ -58,7 +57,7 @@
         <!-- Content page -->
         <div class="container-fluid">
             <div class="page-header">
-                <h1 class="text-titles"> Taller </h1>
+                <h1 class="text-titles"><i class="zmdi zmdi-face zmdi-hc-fw"></i> Curso </h1>
             </div>
         </div>
         <div class="container-fluid">
@@ -69,33 +68,50 @@
                         <li><a href="#new" data-toggle="tab">Nuevo</a></li>
                     </ul>
                     <div id="myTabContent" class="tab-content">
-
+                        <div class="tab-pane fade" id="new">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-10 col-md-offset-1">
+                                        <form enctype="multipart/form-data" action="<?php echo base_url(); ?>admin/nuevo_curso" method="post"">
+                                            <fieldset>Datos Curso</fieldset>
+                                            <div class="form-group label-floating">
+                                                <label class="control-label">Nombre del Curso</label>
+                                                <input class="form-control" type="text" name="nombre">
+                                            </div>
+                                            <br><br>
+                                            <p class="text-center">
+                                                <button href="#!" class="btn btn-info btn-raised btn-sm"><i class="zmdi zmdi-floppy"></i> Guardar</button>
+                                            </p>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="tab-pane fade active in" id="list">
                             <div class="table-responsive">
-                                <table class="table table-hover text-center">
+                                <table id="my_table" class="table table-hover text-center">
                                     <thead>
                                         <tr>
                                             <th class="text-center">#</th>
-                                            <th class="text-center">Nombre</th>
-                                            <th class="text-center">Fecha</th>
-                                            <th class="text-center">Categoria</th>
+                                            <th class="text-center">Nombre del Curso</th>
+                                            <th class="text-center">Actualizar</th>
+                                            <th class="text-center">Eliminar</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        if (empty($talleres) == false) {
-                                            foreach ($talleres as $taller) {
-                                                echo'<tr>';
-                                                echo"<td class='id_taller'>" . $taller['id_taller'] . "</td>";
-                                                echo"<td>" . $taller['nombre_taller'] . "</td>";
-                                                echo"<td>" . $taller['fecha'] . "</td>";
-                                                echo"<td>" . $taller['nombre_categoria'] . "</td>";
-                                            }
-                                        }
+                                        foreach ($listas as $curso):
+                                            echo'<tr id="tr_' . $curso->id_curso . '">';
+                                            echo"<td class='id_curso'>" . $curso->id_curso . "</td>";
+                                            echo"<td>" . $curso->curso . "</td>";
+                                            echo'<td><a onclick="modificar_curso_modal(' . $curso->id_curso . ')" class="btn btn-success btn-raised btn-xs"><i class="zmdi zmdi-refresh"></i></a></td>';
+                                            echo'<td><a onclick="eliminar_curso(this,' . $curso->id_curso . ')" class="btn btn-danger btn-raised btn-xs"><i class="zmdi zmdi-delete"></i></a></td>';
+                                            echo '</tr>';
+                                        endforeach
                                         ?>
                                     </tbody>
                                 </table>
-                                <?php echo $paginacion; ?>
+                                <?php echo $this->pagination->create_links() ?>
                             </div>
                         </div>
                     </div>
@@ -181,21 +197,17 @@
     </div>
     <script>
         $.material.init();
-        function deshabilitar(boton) {
-            var tr = $(boton).closest("tr");
-            var id_taller = $(boton).closest("tr")
-                    .find(".id_taller")
-                    .html();
-            var url = "<?php echo base_url(); ?>profesor/deshabilitar_taller/" + id_taller;
+        function modificar_curso_modal(id_curso) {
+            var url = "<?php echo base_url(); ?>admin/modificar_curso_form/" + id_curso;
             $.ajax({
                 url: url
             }).done(function (response) {
-                if (response == "ok") {
-                    tr.find('.td_habilitar').append('<button class="boton_habilitar" onclick="habilitar(this)">Habilitar</button>');
-                    tr.find('.boton_deshabilitar').remove();
-
+                if (response != "false") {
+                    $('#respuesta_modal').find('.modal-body').html(response);
+                    $('#modal_form_boton_curso').attr('onclick', 'modificar_curso(' + id_curso + ')');
+                    $('#respuesta_modal').modal("show");
                 } else {
-                    $('#respuesta_modal').find('.modal-body').html('No se habilitó el taller. ' + response);
+                    $('#respuesta_modal').find('.modal-body').html('No existe el curso.');
                     $('#respuesta_modal').modal("show");
                 }
             }).fail(function (response) {
@@ -205,21 +217,39 @@
             });
         }
 
-        function habilitar(boton) {
-            var tr = $(boton).closest("tr");
-            var id_taller = $(boton).closest("tr")
-                    .find(".id_taller")
-                    .html();
-            var url = "<?php echo base_url(); ?>profesor/habilitar_taller/" + id_taller;
+        function modificar_curso(id_curso) {
+            var url = "<?php echo base_url(); ?>admin/modificar_curso/" + id_curso;
+            var data = {'curso': $('#curso_form').val()};
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: data
+            }).done(function (response) {
+                if (response != "false") {
+                    $('#tr_' + id_curso).replaceWith(response);
+                    $('#respuesta_modal').modal("hide");
+                } else {
+                    $('#respuesta_modal').find('.modal-body').html('No existe el curso.');
+                    $('#respuesta_modal').modal("show");
+                }
+            }).fail(function (response) {
+                console.log("La solicitud a fallado: " + response);
+                alert("Error en la url.");
+
+            });
+        }
+
+        function eliminar_curso(boton, id_curso) {
+            var url = "<?php echo base_url(); ?>admin/eliminar_curso/" + id_curso;
             $.ajax({
                 url: url
             }).done(function (response) {
                 if (response == "ok") {
-                    tr.find('.td_habilitar').append('<button class="boton_deshabilitar" onclick="deshabilitar(this)">Deshabilitar</button>');
-                    tr.find('.boton_habilitar').remove();
-                    console.log('Habilitado correctamente.');
+                    $('#respuesta_modal').find('.modal-body').html('Se ha eliminado correctamente.');
+                    $('#respuesta_modal').modal("show");
+                    $(boton).closest('tr').html('');
                 } else {
-                    $('#respuesta_modal').find('.modal-body').html('No se habilitó el taller. ' + response);
+                    $('#respuesta_modal').find('.modal-body').html(response);
                     $('#respuesta_modal').modal("show");
                 }
             }).fail(function (response) {
@@ -228,10 +258,6 @@
             });
         }
     </script>
-    <style>
-        .hora{
-            display:inline;
-        }
-    </style>
+</script>
 </body>
 </html>
