@@ -26,7 +26,7 @@ INSERT INTO `racons`.`taller` (`nombre`, `descripcion`, `aforamiento`, `dia`, `h
 INSERT INTO `racons`.`taller` (`nombre`, `descripcion`, `aforamiento`, `dia`, `hora_inicio`, `hora_fin`, `id_profesor`, `id_categoria`) VALUES ('Algebra', 'Matrices y conguntos', '25', '2', '800', '1000', '2', '1');
 INSERT INTO `racons`.`alumno_taller` (`id_alumno`, `id_taller`, `fecha`) VALUES ('8', '1', '2017-05-12');
 INSERT INTO `racons`.`alumno_taller` (`id_alumno`, `id_taller`, `fecha`) VALUES ('8', '3', '2017-05-23');
-INSERT INTO `racons`.`persona` (`nick`, `password`, `nombre`, `apellido1`, `apellido2`) VALUES ('admin@admin', '1234', 'Jhon', 'Carter', 'Peliculon');
+INSERT INTO `racons`.`persona` (`nick`, `password`, `nombre`, `apellido1`, `apellido2`) VALUES ('alumno@alumno', '1234', 'Jhon', 'Carter', 'Peliculon');
 INSERT INTO `racons`.`profesor` (`id_profesor`, `administrador`) VALUES ('9', '1');
 INSERT INTO `racons`.`curso_taller` (`id_curso`, `id_taller`) VALUES ('1', '1');
 INSERT INTO `racons`.`curso_taller` (`id_curso`, `id_taller`) VALUES ('2', '1');
@@ -46,7 +46,6 @@ UPDATE `racons`.`taller` SET `activo`='1' WHERE `id_taller`='3';
 UPDATE `racons`.`taller` SET `activo`='1' WHERE `id_taller`='4';
 UPDATE `racons`.`persona` SET `password`='alumno3' WHERE `id_persona`='8';
 INSERT INTO `racons`.`persona` (`nick`, `password`, `nombre`, `apellido1`, `apellido2`) VALUES ('alumno@alumno2', '1234', 'Sergio', 'Ortega', 'Gimenez');
-INSERT INTO `racons`.`alumno` (`id_alumno`, `id_curso`) VALUES ('9', '4');
 
 
 INSERT INTO `racons`.`alumno_taller` (`id_alumno`, `id_taller`, `fecha`) VALUES ('9', '1', '2017-06-06');
