@@ -7,6 +7,29 @@ class Taller_model extends CI_Model {
         return $consulta->num_rows();
     }
 
+    function eliminar_taller($id_taller) {
+        $q = $q = $this->db->query('select * from alumno_taller where fecha < curdate() and id_taller = ' . $id_taller);
+        if ($q->num_rows() > 0) {
+            $result = 'No se pueden borrar talleres que estan en el historial de un alumno.';
+        } else {
+            $q = $this->db->query('Delete from taller where id_taller = ' . $id_taller);
+            $result = 'ok';
+        }
+        return $result;
+    }
+
+    function alumnos_taller($id_taller) {
+        $q = $this->db->query('select * '
+                . ' from persona as  p, alumno as a, alumno_taller as al, curso as c'
+                . ' where p.id_persona = a.id_alumno '
+                . ' and a.id_curso = c.id_curso'
+                . ' and a.id_alumno = al.id_alumno'
+                . ' and al.fecha > curdate()'
+                . ' and id_taller = ' . $id_taller);
+        $result = $q->result_array();
+        return $result;
+    }
+
     function taller($id_taller) {
         $q = $this->db->query('select * ,(select count(*) '
                 . ' from alumno_taller as al '
@@ -21,8 +44,7 @@ class Taller_model extends CI_Model {
     public function taller_fila($id_taller) {
         $taller = $this->taller($id_taller);
         if ($taller != false) {
-            $result = '<tr id="' . $taller['id_taller'] . '">'
-                    . "<td class='id_taller'>" . $taller['id_taller'] . "</td>"
+            $result = "<td class='id_taller'>" . $taller['id_taller'] . "</td>"
                     . "<td>" . $taller['nombre'] . "</td>"
                     . "<td>" . $taller['descripcion'] . "</td>"
                     . "<td>" . $taller['aforamiento'] . "/" . $taller['participantes'] . "</td>"
@@ -42,7 +64,6 @@ class Taller_model extends CI_Model {
                 $result .= '<td><a onclick="modificar_taller_modal(' . $taller['id_taller'] . ')" class="btn btn-success btn-raised btn-xs"><i class="zmdi zmdi-refresh"></i></a></td>';
                 $result .= '<td><a onclick="eliminar_taller_modal(this,' . $taller['id_taller'] . ')" class="btn btn-danger btn-raised btn-xs"><i class="zmdi zmdi-delete"></i></a></td>';
             }
-            $result .= '</tr>';
         } else {
             $result = false;
         }
@@ -196,15 +217,16 @@ class Taller_model extends CI_Model {
         $this->db->where('id_taller', $id_taller);
         $this->db->update('taller', $data);
         $this->insertar_curso_taller($id_cursos, $id_taller);
-        return $this->db->affected_rows() > 0;
+        return 1;
     }
 
     public function insertar_curso_taller($id_cursos, $id_taller) {
-        $this->db->delete('curso_taller', array('id_taller' => $id_taller));
-        foreach ($id_cursos as $id_curso) {
-            $this->db->insert('curso_taller', ['id_curso' => $id_curso, 'id_taller' => $id_taller]);
+        if ($id_cursos != false) {
+            $this->db->delete('curso_taller', array('id_taller' => $id_taller));
+            foreach ($id_cursos as $id_curso) {
+                $this->db->insert('curso_taller', ['id_curso' => $id_curso, 'id_taller' => $id_taller]);
+            }
         }
-        return $this->db->affected_rows() > 0;
     }
 
     public function taller_profesor_horario($id_profesor) {

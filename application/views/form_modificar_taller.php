@@ -129,7 +129,7 @@
         $c = 1;
         foreach ($cursos as $curso) {
 
-            echo '<input id="id_curso' . $c . '" value="' . $curso['id_curso'] . '" type="checkbox" name="id_curso' . $c . '" value="' . $curso['id_curso'] . '">' . $curso['curso'] . '</input>';
+            echo '<input id="id_curso_' . $c . '" value="' . $curso['id_curso'] . '" type="checkbox" name="id_curso_' . $c . '" value="' . $curso['id_curso'] . '">' . $curso['curso'] . '</input>';
             $c += 1;
         }
         ?>

@@ -74,14 +74,14 @@ CREATE TABLE `alumno_taller` (
   `fecha` DATE NOT NULL,
   PRIMARY KEY (`id_taller`, `id_alumno`, `fecha`),
   CONSTRAINT `alumno_taller_ibfk_1` FOREIGN KEY (`id_alumno`) REFERENCES `alumno` (`id_alumno`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `alumno_taller_ibfk_2` FOREIGN KEY (`id_taller`) REFERENCES `taller` (`id_taller`) 
+  CONSTRAINT `alumno_taller_ibfk_2` FOREIGN KEY (`id_taller`) REFERENCES `taller` (`id_taller`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `curso_taller` (
   `id_curso` int(11) NOT NULL,
   `id_taller` int(11) NOT NULL,
  PRIMARY KEY (`id_curso`, `id_taller`),
- CONSTRAINT `curso_taller_ibfk_1` FOREIGN KEY (`id_taller`) REFERENCES `taller` (`id_taller`) ,
+ CONSTRAINT `curso_taller_ibfk_1` FOREIGN KEY (`id_taller`) REFERENCES `taller` (`id_taller`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `curso_taller_ibfk_2` FOREIGN KEY (`id_curso`) REFERENCES `curso` (`id_curso`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

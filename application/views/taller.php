@@ -169,7 +169,7 @@
                                                 <?php
                                                 $c = 0;
                                                 foreach ($cursos as $curso) {
-                                                    echo '<input type="checkbox" name="curso' . $c . '" value="' . $curso['id_curso'] . '">' . $curso['curso'] . '</input>';
+                                                    echo '<input type="checkbox" name="id_curso' . $c . '" value="' . $curso['id_curso'] . '">' . $curso['curso'] . '</input>';
                                                     $c += 1;
                                                 }
                                                 ?>
@@ -191,7 +191,7 @@
                                             <th class="text-center">#</th>
                                             <th class="text-center">Nombre</th>
                                             <th class="text-center">Descripción</th>
-                                            <th class="text-center">Aforamiento</th>
+                                            <th class="text-center">Aforo</th>
                                             <th class="text-center">Dia</th>
                                             <th class="text-center">Hora Inicio</th>
                                             <th class="text-center">Hora Fin</th>
@@ -212,7 +212,7 @@
                                                 echo"<td class='id_taller'>" . $taller['id_taller'] . "</td>";
                                                 echo"<td>" . $taller['nombre'] . "</td>";
                                                 echo"<td>" . $taller['descripcion'] . "</td>";
-                                                echo"<td>" . $taller['aforamiento'] . "/" . $taller['participantes'] . "</td>";
+                                                echo"<td><a class='btn glyphicon glyphicon-eye-open' onclick='ver_participantes_modal(" . $taller['id_taller'] . ")'>  " . $taller['aforamiento'] . "/" . $taller['participantes'] . "</a></td>";
                                                 echo"<td>" . $taller['dia'] . "</td>";
                                                 echo"<td>" . substr($taller['hora_inicio'], 3) . "</td>";
                                                 echo"<td>" . substr($taller['hora_fin'], 3) . "</td>";
@@ -398,7 +398,7 @@
                 data: $('#form_modificar').serialize()
             }).done(function (response) {
                 if (response != "false") {
-                    $('#id_taller_' + id_taller).replaceWith(response);
+                    $('#id_taller_' + id_taller).html(response);
                     $('#respuesta_modal').modal("hide");
                 } else {
                     $('#respuesta_modal').find('.modal-body').html(response);
@@ -423,6 +423,37 @@
                 } else {
                     $('#respuesta_modal').find('.modal-body').html(response);
                     $('#respuesta_modal').modal("show");
+                }
+            }).fail(function (response) {
+                console.log("La solicitud a fallado: " + response);
+                alert("Error en la url.");
+            });
+        }
+        function ver_participantes_modal(id_taller) {
+            var url = "<?php echo base_url(); ?>profesor/ver_participantes/" + id_taller;
+            $.ajax({
+                url: url
+            }).done(function (response) {
+                if (response != "false") {
+                    $('#respuesta_modal').find('.modal-body').html(response);
+                    $('#respuesta_modal').modal("show");
+                } else {
+                    $('#respuesta_modal').find('.modal-body').html('No se ha encontrado el taller o no tiene participantes.');
+                    $('#respuesta_modal').modal("show");
+                }
+            }).fail(function (response) {
+                console.log("La solicitud a fallado: " + response);
+                alert("Error en la url.");
+            });
+        }
+
+        function expulsar_alumno(boton, id_taller, id_alumno) {
+            var url = "<?php echo base_url(); ?>profesor/expulsar_alumno/" + id_taller + "/" + id_alumno;
+            $.ajax({
+                url: url
+            }).done(function (response) {
+                if (response == "ok") {
+                    $(boton).closest('tr').html('');
                 }
             }).fail(function (response) {
                 console.log("La solicitud a fallado: " + response);

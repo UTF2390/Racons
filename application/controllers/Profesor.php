@@ -29,6 +29,25 @@ class Profesor extends CI_Controller {
         $this->load->view('horario', $data);
     }
 
+    public function ver_participantes($id_taller) {
+        $this->load->model('Taller_model');
+        $taller = new Taller_model();
+        $data["alumnos"] = $taller->alumnos_taller($id_taller);
+        $data["id_taller"] = $id_taller;
+        $this->load->view('tabla_alumnos_taller', $data);
+    }
+
+    public function expulsar_alumno($id_taller, $id_alumno) {
+        $this->load->model('Taller_model');
+        $taller = new Taller_model();
+        $respuesta = $taller->desapuntar($id_taller, $id_alumno);
+        if ($respuesta == true) {
+            echo 'ok';
+        } else {
+            echo 'No estabas apuntado a esta asignatura (-.-) Hacker!!';
+        }
+    }
+
     public function alumno() {
         $this->load->model('Alumno_model');
         $this->load->model('Curso_model');
@@ -168,14 +187,17 @@ class Profesor extends CI_Controller {
         $hora_inicio_mm = $this->input->post('hora_inicio_mm');
         $hora_fin_hh = $this->input->post('hora_fin_hh');
         $hora_fin_mm = $this->input->post('hora_fin_mm');
-        //$activo = $this->input->post('activo');
         $aforamiento = $this->input->post('aforamiento');
         $i = 1;
         $id_cursos = [];
-        while ($this->input->post('id_curso' . $i) != FALSE) {
-            $aux = $this->input->post('id_curso' . $i);
-            array_push($id_cursos, $aux);
-            $i++;
+        $this->load->model('Curso_model');
+        $curso = new Curso_model();
+        $count_cursos = $curso->filas();
+        for ($i = 1; $i < $count_cursos + 1; $i++) {
+            $aux = $this->input->post('id_curso_' . $i);
+            if ($aux != FALSE) {
+                array_push($id_cursos, $aux);
+            }
         }
         if ($nombre && $aforamiento != FALSE) {
             $this->load->model('Taller_model');
@@ -234,6 +256,13 @@ class Profesor extends CI_Controller {
     /*
      * Deshabilita taller.
      */
+
+    public function eliminar_taller($id_taller) {
+        $this->load->model('Taller_model');
+        $taller = new Taller_model();
+        $exito = $taller->eliminar_taller($id_taller);
+        echo $exito;
+    }
 
     public function deshabilitar_taller($id_taller) {
         /*

@@ -65,7 +65,6 @@ class Alumno extends CI_Controller {
         $taller = new Taller_model();
         $id_alumno = $taller->session->userdata('id_alumno');
         $respuesta = $taller->desapuntar($id_taller, $id_alumno);
-//        redirect('alumno/lista_taller');
         if($respuesta == true){
             echo 'ok';
         }else{

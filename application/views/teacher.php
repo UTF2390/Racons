@@ -92,7 +92,7 @@
                                                     <input class="form-control" type="text" name="apellido2">
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="control-label">Curso</label>
+                                                    <label class="control-label">Tipo de cuenta</label>
                                                     <select class="form-control" name="adminstrador">
                                                         <option value="0" selected>No Administrador</option>
                                                         <option value="1">Administrador</option>

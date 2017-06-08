@@ -13,6 +13,23 @@ class Usuario_model extends CI_Model {
             return false;
         }
     }
+    public function existe_nick($nick) {
+        $this->db->select('*');
+        $this->db->where('nick', $nick);
+        $q = $this->db->get('persona');
+        if ($q->num_rows() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function modificar_usuario($nick, $password) {
+        $id_persona = $this->session->userdata('id_persona');
+        $data = ['nick' => $nick, 'password' => $password];
+        $this->db->where('id_persona', $id_persona);
+        $this->db->update('persona', $data);
+    }
 
     public function dame_datos_usuario($password, $nick) {
         $this->db->select('*');
